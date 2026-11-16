@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPM Studio — Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #12100E;
+    --card-bg: #1A1714;
+    --card-hover: #211E1A;
+    --paper: #EAE2D3;
+    --paper-dim: #9E9484;
+    --ember: #E4572E;
+    --gold: #C99A3C;
+    --ash: #332D27;
+    --input-bg: #141210;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--void);
+    color: var(--paper);
+    font-family: var(--font-body);
+    min-height: 100vh;
+  }
+
+  /* Auth Screen */
+  .auth-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .auth-card {
+    background: var(--card-bg);
+    border: 1px solid var(--ash);
+    border-radius: 8px;
+    padding: 44px 36px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+  .auth-logo {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .auth-logo em { color: var(--ember); font-style: italic; }
+  .auth-sub {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--paper-dim);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+  }
+
+  /* Form controls */
+  .form-group { margin-bottom: 20px; }
+  .form-group label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .form-control {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--ash);
+    border-radius: 4px;
+    padding: 12px 14px;
+    color: var(--paper);
+    font-family: inherit;
+    font-size: 14.5px;
+    transition: border-color .2s;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: var(--ember);
+  }
+  textarea.form-control { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 12px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all .2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: var(--ember);
+    color: #fff;
+    width: 100%;
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #d04922; }
+  .btn-action {
+    background: var(--ember);
+    color: #fff;
+  }
+  .btn-action:hover { background: #d04922; }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--ash);
+    color: var(--paper);
+  }
+  .btn-outline:hover {
+    border-color: var(--paper-dim);
+    background: rgba(255,255,255,0.04);
+  }
+  .btn-danger {
+    background: transparent;
+    border: 1px solid #772b2b;
+    color: #e66a6a;
+  }
+  .btn-danger:hover { background: #772b2b; color: #fff; }
+
+  /* App Dashboard Layout */
+  .dashboard { display: none; }
+  .dash-nav {
+    background: #0f0d0c;
+    border-bottom: 1px solid var(--ash);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dash-logo {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .dash-logo em { color: var(--ember); font-style: italic; }
+  .dash-menu {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .dash-body {
+    max-width: 1180px;
+    margin: 32px auto;
+    padding: 0 24px;
+  }
+  .tabs {
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid var(--ash);
+    margin-bottom: 32px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--paper-dim);
+    padding: 14px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+  .tab-btn.active {
+    color: var(--ember);
+    border-bottom-color: var(--ember);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .panel-card {
+    background: var(--card-bg);
+    border: 1px solid var(--ash);
+    border-radius: 6px;
+    padding: 32px;
+    margin-bottom: 28px;
+  }
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .panel-desc {
+    color: var(--paper-dim);
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 760px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .dash-nav { padding: 14px 18px; }
+    .panel-card { padding: 20px; }
+  }
+
+  /* Items Table / Cards */
+  .items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .item-row {
+    background: var(--input-bg);
+    border: 1px solid var(--ash);
+    border-radius: 4px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .item-title { font-size: 17px; font-weight: 500; margin-bottom: 4px; }
+  .item-meta { font-family: var(--font-mono); font-size: 12px; color: var(--paper-dim); }
+
+  /* Notification Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--ember);
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all .3s ease;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .modal-overlay.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-box {
+    background: var(--card-bg);
+    border: 1px solid var(--ash);
+    border-radius: 6px;
+    padding: 32px;
+    width: 100%;
+    max-width: 640px;
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH VIEW -->
+<div class="auth-wrap" id="authView">
+  <div class="auth-card">
+    <div class="auth-logo">RP<em>M</em> Studio</div>
+    <div class="auth-sub">Content Management Login</div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" class="form-control" required placeholder="rpmhellisreal@gmail.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" class="form-control" required placeholder="••••••••">
+      </div>
+      <div id="loginErr" style="color:#e66a6a;font-size:13px;margin-bottom:16px;display:none;">
+        Incorrect email or password.
+      </div>
+      <button type="submit" class="btn btn-primary">Sign In to Dashboard</button>
+    </form>
+  </div>
+</div>
+
+<!-- DASHBOARD VIEW -->
+<div class="dashboard" id="dashView">
+  <header class="dash-nav">
+    <div class="dash-logo">RP<em>M</em> Studio <em>Admin</em></div>
+    <div class="dash-menu">
+      <a href="/" target="_blank" class="btn btn-outline" style="text-decoration:none;">View Website ↗</a>
+      <button id="logoutBtn" class="btn btn-outline">Logout</button>
+    </div>
+  </header>
+
+  <div class="dash-body">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('blogsTab')">Blogs Management</button>
+      <button class="tab-btn" onclick="switchTab('heroTab')">Hero & About</button>
+      <button class="tab-btn" onclick="switchTab('videosTab')">Videos & YouTube</button>
+      <button class="tab-btn" onclick="switchTab('connectTab')">Social & Footer</button>
+    </div>
+
+    <!-- TAB 1: BLOGS -->
+    <div class="tab-panel active" id="blogsTab">
+      <div class="panel-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div>
+            <h2 class="panel-title">Website Blogs</h2>
+            <p class="panel-desc" style="margin-bottom:0;">Add, update, or remove blog posts shown on your website.</p>
+          </div>
+          <button class="btn btn-action" onclick="openBlogModal()">+ Create New Blog</button>
+        </div>
+
+        <div class="items-list" id="blogsTableList"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: HERO & ABOUT -->
+    <div class="tab-panel" id="heroTab">
+      <div class="panel-card">
+        <h2 class="panel-title">Hero Section Settings</h2>
+        <p class="panel-desc">Customize text and titles for the main landing hero view.</p>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Heading Line 1</label>
+            <input type="text" id="setHeroLine1" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Heading Line 2 (Accent)</label>
+            <input type="text" id="setHeroLine2" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Bio / Description</label>
+          <textarea id="setHeroBio" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Primary Button Text</label>
+            <input type="text" id="setHeroPBtnText" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Primary Button Target URL</label>
+            <input type="text" id="setHeroPBtnHref" class="form-control">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Secondary Button Text</label>
+            <input type="text" id="setHeroSBtnText" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Secondary Button Target URL</label>
+            <input type="text" id="setHeroSBtnHref" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>"Currently" Ticker States (comma-separated)</label>
+          <input type="text" id="setTickerStates" class="form-control" placeholder="Writing a new blog post, Editing a video, ...">
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <h2 class="panel-title">About Section</h2>
+        <p class="panel-desc">Customize your story, bio paragraphs, and tag cloud.</p>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>About Eyebrow</label>
+            <input type="text" id="setAboutEyebrow" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>About Title (HTML allowed, e.g. Who is &lt;em&gt;RPM?&lt;/em&gt;)</label>
+            <input type="text" id="setAboutTitle" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Story Paragraph 1</label>
+          <textarea id="setAboutP1" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Story Paragraph 2</label>
+          <textarea id="setAboutP2" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Tag Cloud (comma-separated)</label>
+            <input type="text" id="setAboutTags" class="form-control" placeholder="Bible Teacher, YouTuber, Writer">
+          </div>
+          <div class="form-group">
+            <label>Quote</label>
+            <input type="text" id="setAboutQuote" class="form-control">
+          </div>
+        </div>
+        <button class="btn btn-action" onclick="saveHeroAboutSettings()">Save Hero & About Settings</button>
+      </div>
+    </div>
+
+    <!-- TAB 3: VIDEOS -->
+    <div class="tab-panel" id="videosTab">
+      <div class="panel-card">
+        <h2 class="panel-title">Main Watch Section Header & Channel Info</h2>
+        <p class="panel-desc">Embed playlist and general channel details.</p>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Section Eyebrow</label>
+            <input type="text" id="setWatchEyebrow" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Section Title (HTML allowed)</label>
+            <input type="text" id="setWatchTitle" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>YouTube Playlist / Video Embed URL</label>
+          <input type="text" id="setWatchIframeSrc" class="form-control">
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Channel Heading</label>
+            <input type="text" id="setWatchChannelHeading" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Channel Button Link</label>
+            <input type="text" id="setWatchChannelBtnHref" class="form-control">
+          </div>
+        </div>
+        <button class="btn btn-action" onclick="saveWatchHeaderSettings()">Save Watch Settings</button>
+      </div>
+
+      <div class="panel-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div>
+            <h2 class="panel-title">Featured Videos List</h2>
+            <p class="panel-desc" style="margin-bottom:0;">Add individual YouTube video cards under Latest Videos.</p>
+          </div>
+          <button class="btn btn-action" onclick="openVideoModal()">+ Add New Video</button>
+        </div>
+        <div class="items-list" id="videosTableList"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: SOCIAL & FOOTER -->
+    <div class="tab-panel" id="connectTab">
+      <div class="panel-card">
+        <h2 class="panel-title">Social Links & Contact Channels</h2>
+        <p class="panel-desc">Update social links, user handles, and contact addresses.</p>
+        <div class="form-group">
+          <label>YouTube Link</label>
+          <input type="text" id="setYtUrl" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Instagram Link (Leave empty or '#' if not yet created)</label>
+          <input type="text" id="setIgUrl" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Facebook Link (Leave empty or '#' if not yet created)</label>
+          <input type="text" id="setFbUrl" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="setEmail" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Footer Copyright Text</label>
+          <input type="text" id="setFooterCopyright" class="form-control">
+        </div>
+        <button class="btn btn-action" onclick="saveConnectSettings()">Save Social & Footer Settings</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BLOG EDIT/CREATE MODAL -->
+<div class="modal-overlay" id="blogEditModal">
+  <div class="modal-box">
+    <h3 class="panel-title" id="blogModalHeading">Create Blog Post</h3>
+    <p class="panel-desc">Both on-site content and external article link are supported.</p>
+    <form id="blogForm">
+      <input type="hidden" id="editBlogId">
+      <div class="form-group">
+        <label>Blog Title *</label>
+        <input type="text" id="blogFormTitle" class="form-control" required>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="blogFormCategory" class="form-control">
+            <option value="Bible Study">Bible Study</option>
+            <option value="Theology">Theology</option>
+            <option value="Devotional">Devotional</option>
+            <option value="Testimony">Testimony</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Publish Date (e.g. MAY 2026)</label>
+          <input type="text" id="blogFormDate" class="form-control">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Author Name</label>
+          <input type="text" id="blogFormAuthor" class="form-control" placeholder="Ramendra Mahto">
+        </div>
+        <div class="form-group">
+          <label>Card Image URL (shown outside in blogs list)</label>
+          <input type="url" id="blogFormCardImage" class="form-control" placeholder="https://... or image link">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Inside Hero Image URL (large image shown at top inside blog reader)</label>
+        <input type="url" id="blogFormHeroImage" class="form-control" placeholder="https://... or image link">
+      </div>
+      <div class="form-group">
+        <label>Short Excerpt / Summary *</label>
+        <input type="text" id="blogFormExcerpt" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>External Blog Link (for "Visit Blog ↗" button)</label>
+        <input type="url" id="blogFormExternalUrl" class="form-control" placeholder="https://hellisreal22.blogspot.com/...">
+      </div>
+      <div class="form-group">
+        <label>Full Content (shown inside "Read Here" on-site modal) *</label>
+        <textarea id="blogFormContent" class="form-control" rows="8" required></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
+        <button type="button" class="btn btn-outline" onclick="closeBlogModal()">Cancel</button>
+        <button type="submit" class="btn btn-action">Save Blog</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- VIDEO EDIT/CREATE MODAL -->
+<div class="modal-overlay" id="videoEditModal">
+  <div class="modal-box">
+    <h3 class="panel-title" id="videoModalHeading">Add Featured Video</h3>
+    <p class="panel-desc">Enter the title and YouTube link.</p>
+    <form id="videoForm">
+      <input type="hidden" id="editVideoId">
+      <div class="form-group">
+        <label>Video Title *</label>
+        <input type="text" id="videoFormTitle" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>YouTube Video Link *</label>
+        <input type="url" id="videoFormUrl" class="form-control" required placeholder="https://www.youtube.com/watch?v=...">
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:24px;">
+        <button type="button" class="btn btn-outline" onclick="closeVideoModal()">Cancel</button>
+        <button type="submit" class="btn btn-action">Save Video</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast">Saved successfully!</div>
+
+<script>
+  let store = null;
+  let token = localStorage.getItem('rpm_admin_token');
+
+  // Verify auth session
+  async function checkAuth() {
+    if (token) {
+      try {
+        const res = await fetch('/api/check-auth', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.authenticated) {
+          showDashboard();
+          return;
+        }
+      } catch (e) {}
+    }
+    showAuth();
+  }
+
+  function showAuth() {
+    document.getElementById('authView').style.display = 'flex';
+    document.getElementById('dashView').style.display = 'none';
+  }
+
+  function showDashboard() {
+    document.getElementById('authView').style.display = 'none';
+    document.getElementById('dashView').style.display = 'block';
+    loadContent();
+  }
+
+  // Login handler
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+      const data = await res.json();
+      if (data.token) {
+        token = data.token;
+        localStorage.setItem('rpm_admin_token', token);
+        document.getElementById('loginErr').style.display = 'none';
+        showDashboard();
+      } else {
+        document.getElementById('loginErr').style.display = 'block';
+      }
+    } catch (err) {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  });
+
+  // Logout handler
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('rpm_admin_token');
+    token = null;
+    showAuth();
+  });
+
+  // Toast
+  function showToast(msg = 'Saved successfully!') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Load content from API
+  async function loadContent() {
+    try {
+      const res = await fetch('/api/content');
+      store = await res.json();
+      populateForm();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // Populate data into panels
+  function populateForm() {
+    if (!store) return;
+    const s = store.siteSettings || {};
+
+    // Hero
+    document.getElementById('setHeroLine1').value = s.heroTitleLine1 || '';
+    document.getElementById('setHeroLine2').value = s.heroTitleLine2 || '';
+    document.getElementById('setHeroBio').value = s.heroBio || '';
+    document.getElementById('setHeroPBtnText').value = s.heroPrimaryBtnText || '';
+    document.getElementById('setHeroPBtnHref').value = s.heroPrimaryBtnHref || '';
+    document.getElementById('setHeroSBtnText').value = s.heroSecondaryBtnText || '';
+    document.getElementById('setHeroSBtnHref').value = s.heroSecondaryBtnHref || '';
+    document.getElementById('setTickerStates').value = (s.nowTickerStates || []).join(', ');
+
+    // About
+    document.getElementById('setAboutEyebrow').value = s.aboutEyebrow || '';
+    document.getElementById('setAboutTitle').value = s.aboutTitle || '';
+    document.getElementById('setAboutP1').value = s.aboutParagraph1 || '';
+    document.getElementById('setAboutP2').value = s.aboutParagraph2 || '';
+    document.getElementById('setAboutTags').value = (s.aboutTags || []).join(', ');
+    document.getElementById('setAboutQuote').value = s.aboutQuote || '';
+
+    // Watch
+    document.getElementById('setWatchEyebrow').value = s.watchEyebrow || '';
+    document.getElementById('setWatchTitle').value = s.watchTitle || '';
+    document.getElementById('setWatchIframeSrc').value = s.watchIframeSrc || '';
+    document.getElementById('setWatchChannelHeading').value = s.watchChannelHeading || '';
+    document.getElementById('setWatchChannelBtnHref').value = s.watchChannelBtnHref || '';
+
+    // Social Links
+    const links = s.socialLinks || [];
+    const yt = links.find(l => l.label.toLowerCase().includes('youtube'));
+    const ig = links.find(l => l.label.toLowerCase().includes('instagram'));
+    const fb = links.find(l => l.label.toLowerCase().includes('facebook'));
+    const em = links.find(l => l.label.toLowerCase().includes('email'));
+
+    document.getElementById('setYtUrl').value = yt ? yt.href : '';
+    document.getElementById('setIgUrl').value = ig && ig.href !== '#' ? ig.href : '';
+    document.getElementById('setFbUrl').value = fb && fb.href !== '#' ? fb.href : '';
+    document.getElementById('setEmail').value = em ? em.value : '';
+    document.getElementById('setFooterCopyright').value = s.footerCopyright || '';
+
+    renderBlogsList();
+    renderVideosList();
+  }
+
+  // Render blogs in list
+  function renderBlogsList() {
+    const list = document.getElementById('blogsTableList');
+    const blogs = store.blogs || [];
+    if (!blogs.length) {
+      list.innerHTML = `<div style="color:var(--paper-dim);padding:16px;">No blogs found. Click "+ Create New Blog" to add one.</div>`;
+      return;
+    }
+    list.innerHTML = blogs.map(b => `
+      <div class="item-row">
+        <div>
+          <div class="item-title">${b.title}</div>
+          <div class="item-meta">${b.category || 'General'} · ${b.publishDate || 'Recent'}</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="editBlog('${b.id}')">Edit</button>
+          <button class="btn btn-danger" onclick="deleteBlog('${b.id}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Render videos in list
+  function renderVideosList() {
+    const list = document.getElementById('videosTableList');
+    const videos = store.videos || [];
+    if (!videos.length) {
+      list.innerHTML = `<div style="color:var(--paper-dim);padding:16px;">No videos added yet.</div>`;
+      return;
+    }
+    list.innerHTML = videos.map(v => `
+      <div class="item-row">
+        <div>
+          <div class="item-title">${v.title}</div>
+          <div class="item-meta">${v.youtubeUrl || ''}</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="editVideo('${v.id}')">Edit</button>
+          <button class="btn btn-danger" onclick="deleteVideo('${v.id}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Save changes to API
+  async function persistStore(msg = 'Saved successfully!') {
+    try {
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(store)
+      });
+      if (res.ok) {
+        showToast(msg);
+      } else {
+        alert('Authentication expired. Please log in again.');
+        showAuth();
+      }
+    } catch (e) {
+      alert('Failed to save changes.');
+    }
+  }
+
+  // Save Hero & About
+  function saveHeroAboutSettings() {
+    const s = store.siteSettings;
+    s.heroTitleLine1 = document.getElementById('setHeroLine1').value;
+    s.heroTitleLine2 = document.getElementById('setHeroLine2').value;
+    s.heroBio = document.getElementById('setHeroBio').value;
+    s.heroPrimaryBtnText = document.getElementById('setHeroPBtnText').value;
+    s.heroPrimaryBtnHref = document.getElementById('setHeroPBtnHref').value;
+    s.heroSecondaryBtnText = document.getElementById('setHeroSBtnText').value;
+    s.heroSecondaryBtnHref = document.getElementById('setHeroSBtnHref').value;
+    s.nowTickerStates = document.getElementById('setTickerStates').value.split(',').map(x => x.trim()).filter(Boolean);
+
+    s.aboutEyebrow = document.getElementById('setAboutEyebrow').value;
+    s.aboutTitle = document.getElementById('setAboutTitle').value;
+    s.aboutParagraph1 = document.getElementById('setAboutP1').value;
+    s.aboutParagraph2 = document.getElementById('setAboutP2').value;
+    s.aboutTags = document.getElementById('setAboutTags').value.split(',').map(x => x.trim()).filter(Boolean);
+    s.aboutQuote = document.getElementById('setAboutQuote').value;
+
+    persistStore('Hero & About settings saved!');
+  }
+
+  // Save Watch Header
+  function saveWatchHeaderSettings() {
+    const s = store.siteSettings;
+    s.watchEyebrow = document.getElementById('setWatchEyebrow').value;
+    s.watchTitle = document.getElementById('setWatchTitle').value;
+    s.watchIframeSrc = document.getElementById('setWatchIframeSrc').value;
+    s.watchChannelHeading = document.getElementById('setWatchChannelHeading').value;
+    s.watchChannelBtnHref = document.getElementById('setWatchChannelBtnHref').value;
+
+    persistStore('Watch settings saved!');
+  }
+
+  // Save Connect / Social
+  function saveConnectSettings() {
+    const s = store.siteSettings;
+    const ytUrl = document.getElementById('setYtUrl').value.trim();
+    const igUrl = document.getElementById('setIgUrl').value.trim() || '#';
+    const fbUrl = document.getElementById('setFbUrl').value.trim() || '#';
+    const email = document.getElementById('setEmail').value.trim();
+
+    s.socialLinks = [
+      { label: 'YouTube', value: 'Hell is Real', href: ytUrl },
+      { label: 'Instagram', value: 'Instagram', href: igUrl },
+      { label: 'Facebook', value: 'Facebook', href: fbUrl },
+      { label: 'Email', value: email, href: `mailto:${email}` }
+    ];
+    s.footerCopyright = document.getElementById('setFooterCopyright').value;
+
+    persistStore('Social links and footer saved!');
+  }
+
+  // Tab switcher
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+
+  // Blog modal controls
+  function openBlogModal(id = null) {
+    document.getElementById('editBlogId').value = id || '';
+    if (id) {
+      const b = (store.blogs || []).find(x => x.id === id);
+      if (b) {
+        document.getElementById('blogModalHeading').textContent = 'Edit Blog Post';
+        document.getElementById('blogFormTitle').value = b.title || '';
+        document.getElementById('blogFormCategory').value = b.category || 'Bible Study';
+        document.getElementById('blogFormDate').value = b.publishDate || '';
+        document.getElementById('blogFormAuthor').value = b.author || 'Ramendra Mahto';
+        document.getElementById('blogFormCardImage').value = b.cardImage || '';
+        document.getElementById('blogFormHeroImage').value = b.heroImage || '';
+        document.getElementById('blogFormExcerpt').value = b.excerpt || '';
+        document.getElementById('blogFormExternalUrl').value = b.externalUrl || '';
+        document.getElementById('blogFormContent').value = b.content || '';
+      }
+    } else {
+      document.getElementById('blogModalHeading').textContent = 'Create Blog Post';
+      document.getElementById('blogForm').reset();
+    }
+    document.getElementById('blogEditModal').classList.add('active');
+  }
+
+  function closeBlogModal() {
+    document.getElementById('blogEditModal').classList.remove('active');
+  }
+
+  function editBlog(id) {
+    openBlogModal(id);
+  }
+
+  function deleteBlog(id) {
+    if (!confirm('Are you sure you want to delete this blog?')) return;
+    store.blogs = (store.blogs || []).filter(b => b.id !== id);
+    renderBlogsList();
+    persistStore('Blog deleted!');
+  }
+
+  document.getElementById('blogForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editBlogId').value;
+    const blogData = {
+      id: id || Date.now().toString(),
+      title: document.getElementById('blogFormTitle').value.trim(),
+      category: document.getElementById('blogFormCategory').value,
+      publishDate: document.getElementById('blogFormDate').value.trim(),
+      author: document.getElementById('blogFormAuthor').value.trim() || 'Ramendra Mahto',
+      cardImage: document.getElementById('blogFormCardImage').value.trim(),
+      heroImage: document.getElementById('blogFormHeroImage').value.trim(),
+      excerpt: document.getElementById('blogFormExcerpt').value.trim(),
+      externalUrl: document.getElementById('blogFormExternalUrl').value.trim(),
+      content: document.getElementById('blogFormContent').value.trim()
+    };
+
+    if (id) {
+      const idx = store.blogs.findIndex(x => x.id === id);
+      if (idx !== -1) store.blogs[idx] = blogData;
+    } else {
+      store.blogs.unshift(blogData);
+    }
+
+    closeBlogModal();
+    renderBlogsList();
+    persistStore('Blog saved successfully!');
+  });
+
+  // Video modal controls
+  function openVideoModal(id = null) {
+    document.getElementById('editVideoId').value = id || '';
+    if (id) {
+      const v = (store.videos || []).find(x => x.id === id);
+      if (v) {
+        document.getElementById('videoModalHeading').textContent = 'Edit Video';
+        document.getElementById('videoFormTitle').value = v.title || '';
+        document.getElementById('videoFormUrl').value = v.youtubeUrl || '';
+      }
+    } else {
+      document.getElementById('videoModalHeading').textContent = 'Add Featured Video';
+      document.getElementById('videoForm').reset();
+    }
+    document.getElementById('videoEditModal').classList.add('active');
+  }
+
+  function closeVideoModal() {
+    document.getElementById('videoEditModal').classList.remove('active');
+  }
+
+  function editVideo(id) {
+    openVideoModal(id);
+  }
+
+  function deleteVideo(id) {
+    if (!confirm('Are you sure you want to delete this video?')) return;
+    store.videos = (store.videos || []).filter(v => v.id !== id);
+    renderVideosList();
+    persistStore('Video deleted!');
+  }
+
+  document.getElementById('videoForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editVideoId').value;
+    const videoData = {
+      id: id || Date.now().toString(),
+      title: document.getElementById('videoFormTitle').value.trim(),
+      youtubeUrl: document.getElementById('videoFormUrl').value.trim()
+    };
+
+    if (id) {
+      const idx = store.videos.findIndex(x => x.id === id);
+      if (idx !== -1) store.videos[idx] = videoData;
+    } else {
+      store.videos.unshift(videoData);
+    }
+
+    closeVideoModal();
+    renderVideosList();
+    persistStore('Video saved successfully!');
+  });
+
+  checkAuth();
+</script>
+</body>
+</html>

@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPM — Ramendra Mahto | Artist · Articles · Creator</title>
+<meta name="description" content="Ramendra Mahto — artist, blogger and creator behind Hell is Real. Essays, videos and original music.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#12100E;
+    --ember-deep:#2E1109;
+    --ember-deep2:#1a0d06;
+    --paper:#EAE2D3;
+    --paper-dim:#B7AE9D;
+    --ember:#E4572E;
+    --gold:#C99A3C;
+    --ash:#4A433C;
+    --header-bg:rgba(18,16,14,0.75);
+    --grain-opacity:0.05;
+    --hover-tint:#1b1712;
+    --font-display:'Fraunces', serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+    transition:background .35s ease, color .35s ease;
+  }
+
+  html[data-theme="light"]{
+    --void:#FAF6EE;
+    --ember-deep:#F2E4CE;
+    --ember-deep2:#EAD8B8;
+    --paper:#1C1712;
+    --paper-dim:#6B6156;
+    --ember:#C1440E;
+    --gold:#9C7A2E;
+    --ash:#DCD1BC;
+    --header-bg:rgba(250,246,238,0.8);
+    --grain-opacity:0.03;
+    --hover-tint:#F0E6D2;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--void);
+    color:var(--paper);
+    font-family:var(--font-body);
+    line-height:1.5;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* subtle grain */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:var(--grain-opacity);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px;}
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:50;
+    background:var(--header-bg);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 32px;
+    max-width:1120px;
+    margin:0 auto;
+  }
+  .logo{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:20px;
+    letter-spacing:0.02em;
+  }
+  .logo em{color:var(--ember);font-style:italic;}
+  .navlinks{display:flex;gap:32px;list-style:none;}
+  .navlinks a{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    transition:color .25s ease;
+  }
+  .navlinks a:hover{color:var(--ember);}
+  .nav-cta{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:9px 16px;
+    border:1px solid var(--ember);
+    border-radius:2px;
+    color:var(--ember);
+    transition:all .25s ease;
+  }
+  .nav-cta:hover{background:var(--ember);color:var(--void);}
+  .menu-toggle{display:none;background:none;border:none;color:var(--paper);font-size:22px;cursor:pointer;}
+  .theme-toggle{
+    background:none;
+    border:1px solid var(--ash);
+    color:var(--paper);
+    width:38px;height:38px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:16px;
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .25s ease, color .25s ease, transform .3s ease;
+  }
+  .theme-toggle:hover{border-color:var(--ember);color:var(--ember);transform:rotate(20deg);}
+
+  @media (max-width:760px){
+    .navlinks{
+      position:fixed;top:64px;left:0;right:0;
+      flex-direction:column;
+      background:var(--void);
+      padding:24px 32px;
+      gap:20px;
+      border-bottom:1px solid var(--ash);
+      transform:translateY(-150%);
+      transition:transform .3s ease;
+    }
+    .navlinks.open{transform:translateY(0);}
+    .menu-toggle{display:block;}
+    .nav-cta{display:none;}
+  }
+
+  /* ---------- WAVEFORM DIVIDER (signature element) ---------- */
+  .waveform{
+    width:100%;
+    height:40px;
+    display:block;
+  }
+  .waveform path{
+    fill:none;
+    stroke:var(--ember);
+    stroke-width:1.5;
+    stroke-linecap:round;
+    opacity:0.55;
+  }
+  .wf-section{padding:6px 0;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:120px 0 60px 0;
+    position:relative;
+    z-index:2;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.3fr 0.9fr;
+    gap:48px;
+    align-items:flex-end;
+  }
+  .hero-name{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(50px,7.5vw,104px);
+    line-height:0.94;
+    letter-spacing:-0.01em;
+  }
+  .hero-name .line2{
+    font-style:italic;
+    font-weight:400;
+    color:var(--ember);
+  }
+  .hero-sub{
+    margin-top:20px;
+    max-width:540px;
+    font-size:16px;
+    line-height:1.65;
+    color:var(--paper-dim);
+  }
+  .hero-cta-row{
+    margin-top:28px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:13px 22px;
+    border-radius:2px;
+    transition:all .25s ease;
+    display:inline-block;
+  }
+  .btn-solid{background:var(--ember);color:var(--void);}
+  .btn-solid:hover{background:var(--gold);}
+  .btn-line{border:1px solid var(--ash);color:var(--paper);}
+  .btn-line:hover{border-color:var(--paper);}
+
+  .hero-side{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--paper-dim);
+    border-left:1px solid var(--ash);
+    padding-left:28px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:8px;
+  }
+  .hero-side .now{color:var(--gold);letter-spacing:0.05em;text-transform:uppercase;font-size:11.5px;margin-bottom:4px;}
+  .hero-side .now-val{
+    color:var(--paper);
+    font-size:15px;
+    min-height:20px;
+  }
+  .stat-row{margin-top:20px;display:flex;flex-direction:column;gap:6px;}
+  .stat-row div{display:flex;justify-content:space-between;gap:16px;}
+  .stat-row span:first-child{color:var(--paper-dim);}
+  .stat-row span:last-child{color:var(--paper);}
+
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-side{border-left:none;border-top:1px solid var(--ash);padding-left:0;padding-top:20px;}
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{
+    position:relative;
+    z-index:2;
+    padding:64px 0;
+  }
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    margin-bottom:36px;
+    flex-wrap:wrap;
+  }
+  .section-title{
+    font-family:var(--font-display);
+    font-weight:500;
+    font-size:clamp(30px,4vw,46px);
+    margin-top:8px;
+  }
+  .section-title em{font-style:italic;color:var(--ember);}
+  .section-desc{max-width:420px;color:var(--paper-dim);font-size:15px;}
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:64px;
+    align-items:start;
+  }
+  .about-grid p{color:var(--paper-dim);margin-bottom:18px;font-size:16px;}
+  .pull{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:clamp(24px,3vw,34px);
+    line-height:1.3;
+    color:var(--paper);
+    border-left:2px solid var(--ember);
+    padding-left:24px;
+    margin-top:8px;
+  }
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;}
+  .tag-cloud span{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    border:1px solid var(--ash);
+    padding:7px 12px;
+    border-radius:2px;
+    color:var(--paper-dim);
+  }
+  @media (max-width:820px){.about-grid{grid-template-columns:1fr;}}
+
+  /* ---------- WRITING (BLOG) ---------- */
+  .post-list{border-top:1px solid var(--ash);}
+  .post{
+    display:grid;
+    grid-template-columns:130px 1fr auto;
+    gap:24px;
+    align-items:center;
+    padding:26px 0;
+    border-bottom:1px solid var(--ash);
+    transition:padding-left .25s ease;
+  }
+  .post:hover{padding-left:10px;}
+  .post-card-thumb{
+    width:130px;
+    height:90px;
+    border-radius:4px;
+    object-fit:cover;
+    border:1px solid var(--ash);
+    background:var(--card-bg, #1a1714);
+    flex-shrink:0;
+  }
+  .post-date{font-family:var(--font-mono);font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:0.04em;}
+  .post-author{font-family:var(--font-mono);font-size:11.5px;color:var(--paper-dim);margin-left:8px;}
+  .post-title{font-family:var(--font-display);font-size:22px;font-weight:500;margin-top:4px;}
+  .post-dek{color:var(--paper-dim);font-size:14px;margin-top:6px;max-width:540px;line-height:1.5;}
+  .post-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .post-btn{
+    font-family:var(--font-mono);
+    font-size:12px;
+    padding:6px 12px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:all .2s ease;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    white-space:nowrap;
+  }
+  .post-btn-primary{
+    background:var(--ember);
+    color:#fff;
+    border:1px solid var(--ember);
+  }
+  .post-btn-primary:hover{
+    opacity:0.9;
+  }
+  .post-btn-outline{
+    background:transparent;
+    color:var(--paper-dim);
+    border:1px solid var(--ash);
+  }
+  .post-btn-outline:hover{
+    color:var(--paper);
+    border-color:var(--paper-dim);
+    background:rgba(255,255,255,0.04);
+  }
+  @media (max-width:760px){
+    .post{grid-template-columns:1fr;gap:14px;}
+    .post-card-thumb{width:100%;height:180px;}
+    .post-actions{flex-wrap:wrap;}
+  }
+
+  /* Modal for Reading Blog on Website */
+  .blog-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:rgba(10,8,7,0.85);
+    backdrop-filter:blur(6px);
+    overflow-y:auto;
+    padding:40px 20px;
+  }
+  .blog-modal.active{display:flex;justify-content:center;align-items:flex-start;}
+  .blog-modal-box{
+    background:var(--void);
+    border:1px solid var(--ash);
+    border-radius:6px;
+    max-width:760px;
+    width:100%;
+    padding:40px;
+    position:relative;
+    margin:auto;
+    box-shadow:0 24px 48px rgba(0,0,0,0.5);
+    animation:modalIn .25s ease-out;
+  }
+  @keyframes modalIn {
+    from{opacity:0;transform:translateY(16px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .blog-modal-close{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:none;
+    border:1px solid var(--ash);
+    color:var(--paper-dim);
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .2s ease;
+  }
+  .blog-modal-close:hover{
+    color:var(--paper);
+    border-color:var(--ember);
+  }
+  .blog-modal-hero-img{
+    width:100%;
+    max-height:360px;
+    object-fit:cover;
+    border-radius:4px;
+    margin-bottom:24px;
+    border:1px solid var(--ash);
+  }
+  .blog-modal-category{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ember);
+    margin-bottom:8px;
+  }
+  .blog-modal-title{
+    font-family:var(--font-display);
+    font-size:32px;
+    font-weight:600;
+    line-height:1.25;
+    margin-bottom:10px;
+  }
+  .blog-modal-meta{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--paper-dim);
+    margin-bottom:24px;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .blog-modal-body{
+    font-size:16px;
+    line-height:1.8;
+    color:var(--paper);
+    border-top:1px solid var(--ash);
+    padding-top:24px;
+    white-space:pre-line;
+  }
+  .blog-modal-footer{
+    margin-top:32px;
+    padding-top:20px;
+    border-top:1px solid var(--ash);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+
+  /* ---------- WATCH (YOUTUBE) ---------- */
+  .watch-panel{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:0;
+    border:1px solid var(--ash);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .watch-visual{
+    background:linear-gradient(160deg, var(--ember-deep), var(--ember-deep2));
+    position:relative;
+    min-height:280px;
+  }
+  .watch-visual iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+  }
+  .watch-info{padding:40px;display:flex;flex-direction:column;justify-content:center;gap:16px;}
+  .channel-name{font-family:var(--font-display);font-size:28px;font-weight:600;}
+  .channel-name em{color:var(--ember);font-style:italic;}
+  .watch-info p{color:var(--paper-dim);font-size:15px;}
+  @media (max-width:760px){.watch-panel{grid-template-columns:1fr;}}
+
+  .video-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+  }
+  .video-card{display:flex;flex-direction:column;gap:12px;}
+  .video-embed{
+    position:relative;
+    width:100%;
+    padding-top:56.25%;
+    background:var(--ember-deep);
+    border:1px solid var(--ash);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .video-embed iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+  }
+  .video-title{
+    font-family:var(--font-body);
+    font-size:14.5px;
+    color:var(--paper-dim);
+  }
+  @media (max-width:820px){.video-grid{grid-template-columns:1fr;}}
+
+  /* ---------- CONNECT ---------- */
+  .connect-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1px;
+    background:var(--ash);
+    border:1px solid var(--ash);
+  }
+  .connect-item{
+    background:var(--void);
+    padding:32px;
+    transition:all .25s ease;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    text-decoration:none;
+  }
+  .connect-item:hover{
+    background:var(--hover-tint);
+    transform:translateY(-1px);
+  }
+  .connect-icon{
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    transition:transform .2s ease;
+  }
+  .connect-item:hover .connect-icon{
+    transform:scale(1.08);
+  }
+  .connect-icon svg{
+    width:28px;
+    height:28px;
+  }
+  .connect-icon.yt{background:rgba(255,0,0,0.12);}
+  .connect-icon.ig{background:linear-gradient(45deg, rgba(245,133,41,0.15), rgba(221,42,123,0.15), rgba(129,52,175,0.15));}
+  .connect-icon.fb{background:rgba(24,119,242,0.15);}
+  .connect-icon.em{background:rgba(234,67,53,0.15);}
+
+  .connect-info{flex:1;}
+  .connect-label{font-family:var(--font-mono);font-size:11.5px;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em;}
+  .connect-value{font-family:var(--font-display);font-size:22px;margin-top:6px;}
+  .connect-status{font-family:var(--font-mono);font-size:11px;color:var(--paper-dim);margin-top:3px;}
+  @media (max-width:600px){.connect-grid{grid-template-columns:1fr;}}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--ash);
+    padding:36px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--paper-dim);
+  }
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.show{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- Global SVG Gradients -->
+<svg width="0" height="0" style="position:absolute;display:none;" aria-hidden="true">
+  <defs>
+    <linearGradient id="globalIgGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fdf497"/>
+      <stop offset="5%" stop-color="#fdf497"/>
+      <stop offset="45%" stop-color="#fd5949"/>
+      <stop offset="60%" stop-color="#d6249f"/>
+      <stop offset="90%" stop-color="#285AEB"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<header>
+  <nav>
+    <a href="#hero" class="logo" id="siteLogo">RP<em>M</em></a>
+    <ul class="navlinks" id="navlinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#blogs">Blogs</a></li>
+      <li><a href="#watch">Watch</a></li>
+      <li><a href="#connect">Connect</a></li>
+    </ul>
+    <a href="#connect" class="nav-cta" id="navCta">Let's Connect</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark theme" title="Toggle light / dark">☾</button>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </nav>
+</header>
+
+<!-- ---------- HERO ---------- -->
+<section class="hero" id="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1 class="hero-name" id="heroHeading">RAMENDRA<br><span class="line2">Mahto</span></h1>
+      <p class="hero-sub" id="heroBio">Hello, I'm Ramendra Prasad Mahto. I have a passion for teaching the Bible and sharing the truth of God's Word in Hindi. Through "Hell is Real," I create biblical blog posts, theology resources, and YouTube content to help believers grow in their faith and encourage others to know Christ through the Scriptures.</p>
+      <div class="hero-cta-row">
+        <a href="#blogs" class="btn btn-solid" id="heroPrimaryBtn">Read the Blogs</a>
+        <a href="https://www.youtube.com/@HellisReal22" target="_blank" class="btn btn-line" id="heroSecondaryBtn">Watch on YouTube</a>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div>
+        <div class="now">Currently</div>
+        <div class="now-val" id="nowTicker">Writing a new blog post</div>
+      </div>
+      <div class="stat-row">
+        <div><span>Channel</span><span id="channelStat">Hell is Real</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap wf-section"><svg class="waveform" viewBox="0 0 1120 40" preserveAspectRatio="none"><path id="wf1" d=""/></svg></div>
+
+<!-- ---------- ABOUT ---------- -->
+<section id="about">
+  <div class="wrap about-grid reveal">
+    <div>
+      <p class="eyebrow" id="aboutEyebrow">The Story</p>
+      <h2 class="section-title" id="aboutTitle">Who is <em>RPM?</em></h2>
+      <p style="margin-top:24px;" id="aboutParagraph1">Hello, I'm Ramendra Prasad Mahto. I have a passion for teaching the Bible and sharing the truth of God's Word in Hindi.</p>
+      <p id="aboutParagraph2">Through <strong>Hell is Real</strong>, I create biblical blogs, theology resources, and YouTube content to help believers grow in their faith and encourage others to know Christ through the Scriptures.</p>
+      <div class="tag-cloud" id="aboutTags">
+        <span>Bible Teacher</span><span>YouTuber</span><span>Writer</span>
+      </div>
+    </div>
+    <div>
+      <p class="pull" id="aboutQuote">"Art is not what I do — it is what I am."</p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap wf-section"><svg class="waveform" viewBox="0 0 1120 40" preserveAspectRatio="none"><path id="wf2" d=""/></svg></div>
+
+<!-- ---------- BLOGS ---------- -->
+<section id="blogs">
+  <div class="wrap reveal">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Words & Stories</p>
+        <h2 class="section-title">From the <em>Blog</em></h2>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px;">
+        <p class="section-desc">Honest essays on creativity, music, and the artist's life — new one every week.</p>
+        <a href="https://hellisreal22.blogspot.com/" target="_blank" class="btn btn-line" id="visitBlogBtn" style="white-space:nowrap;">Visit My Blog ↗</a>
+      </div>
+    </div>
+
+    <div class="post-list" id="blogsList">
+      <a class="post" href="https://hellisreal22.blogspot.com/2026/05/blog-post.html" target="_blank">
+        <span class="post-date">MAY 2026</span>
+        <div>
+          <div class="post-title">रूत कौन थी?</div>
+          <div class="post-dek">A look at who Ruth was and her place in the biblical story.</div>
+        </div>
+        <span class="post-arrow">Read →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap wf-section"><svg class="waveform" viewBox="0 0 1120 40" preserveAspectRatio="none"><path id="wf3" d=""/></svg></div>
+
+<!-- ---------- WATCH ---------- -->
+<section id="watch">
+  <div class="wrap reveal">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow" id="watchEyebrow">YouTube Channel</p>
+        <h2 class="section-title" id="watchTitle">Watch & <em>Explore</em></h2>
+      </div>
+      <p class="section-desc" id="watchDescription">Sermons, teachings, and gospel-centered videos — watch here or on the channel.</p>
+    </div>
+    <div class="watch-panel">
+      <div class="watch-visual">
+        <iframe
+          id="watchIframe"
+          src="https://www.youtube.com/embed/videoseries?list=UUWuxZfX7FHTa32MxdEDHS1A"
+          title="Hell is Real — video playlist"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+      <div class="watch-info">
+        <p class="channel-name" id="watchChannelHeading">Hell is <em>Real</em></p>
+        <p id="watchChannelDescription">Sermons, teachings and gospel-centered videos — browse the full playlist here, or head to the channel for everything.</p>
+        <a href="https://www.youtube.com/@HellisReal22" target="_blank" class="btn btn-solid" id="watchChannelBtn" style="width:fit-content;">Go to YouTube Channel</a>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:64px;margin-bottom:32px;">
+      <div>
+        <p class="eyebrow">Featured</p>
+        <h2 class="section-title" style="font-size:28px;">Latest <em>Videos</em></h2>
+      </div>
+    </div>
+    <div class="video-grid" id="videoGrid">
+      <div class="video-card">
+        <div class="video-embed">
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID_HERE" title="Video title" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <p class="video-title">Add this video's title here</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap wf-section"><svg class="waveform" viewBox="0 0 1120 40" preserveAspectRatio="none"><path id="wf4" d=""/></svg></div>
+
+<!-- ---------- CONNECT ---------- -->
+<section id="connect">
+  <div class="wrap reveal">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow" id="connectEyebrow">Get In Touch</p>
+        <h2 class="section-title" id="connectTitle">Let's <em>Connect</em></h2>
+      </div>
+      <p class="section-desc" id="connectDescription">Collaborate, book a session, or just say hello.</p>
+    </div>
+    <div class="connect-grid" id="connectGrid">
+      <a class="connect-item" href="https://www.youtube.com/@HellisReal22" target="_blank" rel="noopener">
+        <div class="connect-icon yt">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" fill="#FF0000"/>
+            <path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" fill="#FFFFFF"/>
+          </svg>
+        </div>
+        <div class="connect-info">
+          <div class="connect-label">YouTube</div>
+          <div class="connect-value">Hell is Real</div>
+          <div class="connect-status">@HellisReal22 · Subscribe ↗</div>
+        </div>
+      </a>
+
+      <div class="connect-item" style="cursor:default;">
+        <div class="connect-icon ig">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" fill="url(#globalIgGrad)"/>
+          </svg>
+        </div>
+        <div class="connect-info">
+          <div class="connect-label">Instagram</div>
+          <div class="connect-value">Instagram</div>
+          <div class="connect-status">Coming Soon</div>
+        </div>
+      </div>
+
+      <div class="connect-item" style="cursor:default;">
+        <div class="connect-icon fb">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
+          </svg>
+        </div>
+        <div class="connect-info">
+          <div class="connect-label">Facebook</div>
+          <div class="connect-value">Facebook</div>
+          <div class="connect-status">Coming Soon</div>
+        </div>
+      </div>
+
+      <a class="connect-item" href="mailto:rpmhellisreal@gmail.com">
+        <div class="connect-icon em">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.488l8.073-5.995C21.69 2.28 24 3.434 24 5.457z" fill="#EA4335"/>
+          </svg>
+        </div>
+        <div class="connect-info">
+          <div class="connect-label">Email</div>
+          <div class="connect-value" style="font-size:18px;">rpmhellisreal@gmail.com</div>
+          <div class="connect-status">Direct Inquiries · Send Mail ↗</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span id="footerCopyright">© 2026 Ramendra Mahto — Artist · Blogs · Creator</span>
+  <a href="#hero">Back to top ↑</a>
+</footer>
+
+<!-- ---------- IN-PAGE BLOG READER MODAL ---------- -->
+<div class="blog-modal" id="blogModal" aria-hidden="true">
+  <div class="blog-modal-box">
+    <button class="blog-modal-close" id="blogModalClose" aria-label="Close blog reader">✕</button>
+    <img id="modalHeroImg" class="blog-modal-hero-img" style="display:none;" alt="Blog banner">
+    <div class="blog-modal-category" id="modalCategory">Bible Study</div>
+    <h2 class="blog-modal-title" id="modalTitle">Blog Post Title</h2>
+    <div class="blog-modal-meta">
+      <span id="modalDate">MAY 2026</span>
+      <span id="modalAuthor">By Ramendra Mahto</span>
+    </div>
+    <div class="blog-modal-body" id="modalBody">
+      Full blog content will appear here.
+    </div>
+    <div class="blog-modal-footer">
+      <span style="font-family:var(--font-mono);font-size:12px;color:var(--paper-dim);">Reading on RPM Website</span>
+      <a href="#" target="_blank" class="post-btn post-btn-outline" id="modalExternalLink">Open on External Blog ↗</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // theme toggle (light / dark) — respects system preference on first load, no persistence needed
+  const themeBtn = document.getElementById('themeToggle');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if(prefersLight){
+    document.documentElement.setAttribute('data-theme','light');
+    themeBtn.textContent = '☀';
+  }
+  themeBtn.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if(isLight){
+      document.documentElement.removeAttribute('data-theme');
+      themeBtn.textContent = '☾';
+    } else {
+      document.documentElement.setAttribute('data-theme','light');
+      themeBtn.textContent = '☀';
+    }
+  });
+
+  // mobile menu
+  const toggle = document.getElementById('menuToggle');
+  const navlinks = document.getElementById('navlinks');
+  toggle.addEventListener('click', () => navlinks.classList.toggle('open'));
+  navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navlinks.classList.remove('open')));
+
+  // waveform generator — amplitude increases as you move down the page
+  function buildWave(id, amplitude, points){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const w = 1120, h = 40, mid = h/2;
+    let d = `M0,${mid}`;
+    const step = w/points;
+    for(let i=1;i<=points;i++){
+      const amp = amplitude * (0.4 + Math.random()*0.6);
+      const y = mid + (i%2===0? -amp : amp);
+      d += ` L${i*step},${y}`;
+    }
+    el.setAttribute('d', d);
+  }
+  buildWave('wf1', 4, 60);
+  buildWave('wf2', 7, 60);
+  buildWave('wf3', 10, 60);
+  buildWave('wf4', 14, 60);
+
+  // reveal on scroll
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+  // "currently" ticker
+  let states = ["Writing a new blog post","Editing a video","Preparing Bible study","Answering messages"];
+  let idx = 0;
+  const tickerEl = document.getElementById('nowTicker');
+  setInterval(()=>{
+    if (!states.length) return;
+    idx = (idx+1)%states.length;
+    tickerEl.style.opacity = 0;
+    setTimeout(()=>{ tickerEl.textContent = states[idx]; tickerEl.style.opacity = 1; }, 300);
+  }, 3200);
+  tickerEl.style.transition = 'opacity .3s ease';
+
+  // ==========================================
+  // DYNAMIC CMS DATA INTEGRATION (STRAPI)
+  // ==========================================
+  const API_BASE = 'http://localhost:1337';
+
+  // Helper to render connect items with colorful brand icons
+  function renderConnectItem(s) {
+    const label = (s.label || '').toLowerCase();
+    let iconClass = 'em';
+    let iconSvg = '';
+    let statusText = s.href && s.href !== '#' ? 'Open Link ↗' : 'Coming Soon';
+
+    if (label.includes('youtube')) {
+      iconClass = 'yt';
+      statusText = '@HellisReal22 · Subscribe ↗';
+      iconSvg = `<svg viewBox="0 0 24 24" fill="none"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z" fill="#FF0000"/><path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" fill="#FFFFFF"/></svg>`;
+    } else if (label.includes('instagram')) {
+      iconClass = 'ig';
+      iconSvg = `<svg viewBox="0 0 24 24" fill="none"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" fill="url(#globalIgGrad)"/></svg>`;
+    } else if (label.includes('facebook')) {
+      iconClass = 'fb';
+      iconSvg = `<svg viewBox="0 0 24 24" fill="none"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/></svg>`;
+    } else {
+      iconClass = 'em';
+      statusText = s.href && s.href.startsWith('mailto:') ? 'Direct Inquiries · Send Mail ↗' : statusText;
+      iconSvg = `<svg viewBox="0 0 24 24" fill="none"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.488l8.073-5.995C21.69 2.28 24 3.434 24 5.457z" fill="#EA4335"/></svg>`;
+    }
+
+    const hasLink = s.href && s.href !== '#';
+    const tag = hasLink ? 'a' : 'div';
+    const attrs = hasLink ? `href="${s.href}" target="${s.href.startsWith('mailto:') ? '_self' : '_blank'}" rel="noopener"` : `style="cursor:default;"`;
+
+    return `
+      <${tag} class="connect-item" ${attrs}>
+        <div class="connect-icon ${iconClass}">
+          ${iconSvg}
+        </div>
+        <div class="connect-info">
+          <div class="connect-label">${s.label}</div>
+          <div class="connect-value">${s.value}</div>
+          <div class="connect-status">${statusText}</div>
+        </div>
+      </${tag}>
+    `;
+  }
+
+  // ==========================================
+  // DYNAMIC CMS DATA INTEGRATION
+  // ==========================================
+  let siteData = null;
+
+  async function loadData() {
+    try {
+      const res = await fetch('/api/content');
+      if (!res.ok) return;
+      siteData = await res.json();
+      if (!siteData) return;
+
+      renderSiteSettings(siteData.siteSettings || {});
+      renderBlogs(siteData.blogs || []);
+      renderVideos(siteData.videos || []);
+    } catch (e) {
+      console.warn('Could not load data from API, using default content:', e);
+    }
+  }
+
+  function renderSiteSettings(data) {
+    if (data.logoText) document.getElementById('siteLogo').innerHTML = data.logoText;
+
+    if (Array.isArray(data.navLinks) && data.navLinks.length > 0) {
+      const navEl = document.getElementById('navlinks');
+      navEl.innerHTML = data.navLinks.map(l => `<li><a href="${l.href}">${l.label}</a></li>`).join('');
+    }
+
+    if (data.ctaText) {
+      const ctaEl = document.getElementById('navCta');
+      ctaEl.textContent = data.ctaText;
+      if (data.ctaHref) ctaEl.setAttribute('href', data.ctaHref);
+    }
+
+    if (data.heroTitleLine1 || data.heroTitleLine2) {
+      document.getElementById('heroHeading').innerHTML = `${data.heroTitleLine1 || ''}<br><span class="line2">${data.heroTitleLine2 || ''}</span>`;
+    }
+    if (data.heroBio) document.getElementById('heroBio').textContent = data.heroBio;
+    if (data.heroPrimaryBtnText) {
+      const pBtn = document.getElementById('heroPrimaryBtn');
+      pBtn.textContent = data.heroPrimaryBtnText;
+      if (data.heroPrimaryBtnHref) pBtn.setAttribute('href', data.heroPrimaryBtnHref);
+    }
+    if (data.heroSecondaryBtnText) {
+      const sBtn = document.getElementById('heroSecondaryBtn');
+      sBtn.textContent = data.heroSecondaryBtnText;
+      if (data.heroSecondaryBtnHref) sBtn.setAttribute('href', data.heroSecondaryBtnHref);
+    }
+    if (Array.isArray(data.nowTickerStates) && data.nowTickerStates.length > 0) {
+      states = data.nowTickerStates;
+      tickerEl.textContent = states[0];
+    }
+    if (data.channelStatName) document.getElementById('channelStat').textContent = data.channelStatName;
+
+    // About
+    if (data.aboutEyebrow) document.getElementById('aboutEyebrow').textContent = data.aboutEyebrow;
+    if (data.aboutTitle) document.getElementById('aboutTitle').innerHTML = data.aboutTitle;
+    if (data.aboutParagraph1) document.getElementById('aboutParagraph1').innerHTML = data.aboutParagraph1;
+    if (data.aboutParagraph2) document.getElementById('aboutParagraph2').innerHTML = data.aboutParagraph2;
+    if (Array.isArray(data.aboutTags) && data.aboutTags.length > 0) {
+      document.getElementById('aboutTags').innerHTML = data.aboutTags.map(t => `<span>${t}</span>`).join('');
+    }
+    if (data.aboutQuote) document.getElementById('aboutQuote').textContent = data.aboutQuote;
+
+    // Watch
+    if (data.watchEyebrow) document.getElementById('watchEyebrow').textContent = data.watchEyebrow;
+    if (data.watchTitle) document.getElementById('watchTitle').innerHTML = data.watchTitle;
+    if (data.watchDescription) document.getElementById('watchDescription').textContent = data.watchDescription;
+    if (data.watchIframeSrc) document.getElementById('watchIframe').setAttribute('src', data.watchIframeSrc);
+    if (data.watchChannelHeading) document.getElementById('watchChannelHeading').innerHTML = data.watchChannelHeading;
+    if (data.watchChannelDescription) document.getElementById('watchChannelDescription').textContent = data.watchChannelDescription;
+    if (data.watchChannelBtnText) {
+      const wBtn = document.getElementById('watchChannelBtn');
+      wBtn.textContent = data.watchChannelBtnText;
+      if (data.watchChannelBtnHref) wBtn.setAttribute('href', data.watchChannelBtnHref);
+    }
+
+    // Connect
+    if (data.connectEyebrow) document.getElementById('connectEyebrow').textContent = data.connectEyebrow;
+    if (data.connectTitle) document.getElementById('connectTitle').innerHTML = data.connectTitle;
+    if (data.connectDescription) document.getElementById('connectDescription').textContent = data.connectDescription;
+    if (Array.isArray(data.socialLinks) && data.socialLinks.length > 0) {
+      document.getElementById('connectGrid').innerHTML = data.socialLinks.map(s => renderConnectItem(s)).join('');
+    }
+
+    // Footer
+    if (data.footerCopyright) document.getElementById('footerCopyright').textContent = data.footerCopyright;
+  }
+
+  // In-page blog reader modal handling
+  const blogModal = document.getElementById('blogModal');
+  const modalClose = document.getElementById('blogModalClose');
+  const modalHeroImg = document.getElementById('modalHeroImg');
+  const modalCategory = document.getElementById('modalCategory');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDate = document.getElementById('modalDate');
+  const modalAuthor = document.getElementById('modalAuthor');
+  const modalBody = document.getElementById('modalBody');
+  const modalExternalLink = document.getElementById('modalExternalLink');
+
+  function openBlogModal(blog) {
+    if (blog.heroImage) {
+      modalHeroImg.src = blog.heroImage;
+      modalHeroImg.style.display = 'block';
+    } else {
+      modalHeroImg.style.display = 'none';
+      modalHeroImg.src = '';
+    }
+    modalCategory.textContent = blog.category || 'Blog';
+    modalTitle.textContent = blog.title;
+    modalDate.textContent = blog.publishDate || 'Recent';
+    modalAuthor.textContent = `By ${blog.author || 'Ramendra Mahto'}`;
+    modalBody.innerHTML = blog.content || blog.excerpt || 'No additional content provided.';
+    const extUrl = blog.externalUrl || 'https://hellisreal22.blogspot.com/';
+    modalExternalLink.setAttribute('href', extUrl);
+    blogModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeBlogModal() {
+    blogModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  modalClose.addEventListener('click', closeBlogModal);
+  blogModal.addEventListener('click', (e) => {
+    if (e.target === blogModal) closeBlogModal();
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeBlogModal();
+  });
+
+  // Cached blog posts
+  let loadedBlogsList = [];
+
+  function renderBlogs(articles) {
+    if (!Array.isArray(articles) || articles.length === 0) return;
+    loadedBlogsList = articles;
+
+    const listEl = document.getElementById('blogsList');
+    listEl.innerHTML = articles.map((b, index) => {
+      const extLink = b.externalUrl || `https://hellisreal22.blogspot.com/`;
+      const date = b.publishDate || 'Recent';
+      const author = b.author || 'Ramendra Mahto';
+      const cardImgHtml = b.cardImage
+        ? `<img class="post-card-thumb" src="${b.cardImage}" alt="${b.title}" loading="lazy" onerror="this.style.display='none'">`
+        : `<div class="post-card-thumb" style="display:flex;align-items:center;justify-content:center;color:var(--ember);font-family:var(--font-mono);font-size:24px;">📖</div>`;
+
+      return `
+        <div class="post">
+          ${cardImgHtml}
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="post-date">${date}</span>
+              <span class="post-author">• By ${author}</span>
+            </div>
+            <h3 class="post-title">${b.title}</h3>
+            <p class="post-dek">${b.excerpt || ''}</p>
+          </div>
+          <div class="post-actions">
+            <button class="post-btn post-btn-primary" onclick="openBlogModal(loadedBlogsList[${index}])">Read Here</button>
+            <a class="post-btn post-btn-outline" href="${extLink}" target="_blank" rel="noopener">Visit Blog ↗</a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderVideos(videos) {
+    if (!Array.isArray(videos) || videos.length === 0) return;
+
+    const gridEl = document.getElementById('videoGrid');
+    gridEl.innerHTML = videos.map(v => {
+      let videoId = '';
+      if (v.youtubeUrl) {
+        const match = v.youtubeUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+        if (match && match[1]) {
+          videoId = match[1];
+        }
+      }
+
+      if (videoId) {
+        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}`;
+        const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        return `
+          <div class="video-card">
+            <div class="video-embed">
+              <iframe
+                src="${embedUrl}"
+                title="${v.title}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                loading="lazy">
+              </iframe>
+            </div>
+            <a href="${watchUrl}" target="_blank" rel="noopener" class="video-title" style="display:block;margin-top:8px;text-decoration:none;transition:color .2s;">
+              ${v.title} ↗
+            </a>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="video-card">
+          <div class="video-embed">
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--paper-dim);">Video unavailable</div>
+          </div>
+          <p class="video-title">${v.title}</p>
+        </div>
+      `;
+    }).join('');
+  }
+
+  loadData();
+</script>
+
+</body>
+</html>

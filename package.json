@@ -1,0 +1,10 @@
+{
+  "name": "rpm-website",
+  "version": "1.0.0",
+  "description": "RPM - Ramendra Mahto Personal Website and CMS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {}
+}
