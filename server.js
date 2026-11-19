@@ -68,9 +68,48 @@ function getContentData() {
   return { siteSettings: {}, blogs: [], videos: [] };
 }
 
+// Helper to parse JSON body across both standalone Node and Vercel serverless functions
+function parseRequestBody(req) {
+  return new Promise((resolve, reject) => {
+    // If Vercel or an upstream middleware already parsed the body
+    if (req.body !== undefined && req.body !== null) {
+      if (typeof req.body === 'object') {
+        return resolve(req.body);
+      }
+      if (typeof req.body === 'string') {
+        try {
+          return resolve(JSON.parse(req.body));
+        } catch (e) {
+          return reject(e);
+        }
+      }
+    }
+
+    let data = '';
+    req.on('data', chunk => {
+      data += chunk;
+    });
+    req.on('end', () => {
+      if (!data || !data.trim()) {
+        return resolve({});
+      }
+      try {
+        resolve(JSON.parse(data));
+      } catch (err) {
+        reject(err);
+      }
+    });
+    req.on('error', err => reject(err));
+  });
+}
+
 // Write content data
 function saveContentData(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (err) {
+    console.warn('Could not write to local DATA_FILE (likely read-only serverless):', err.message);
+  }
 }
 
 // MIME types
@@ -120,19 +159,17 @@ const appHandler = (req, res) => {
         return;
       }
 
-      let body = '';
-      req.on('data', chunk => body += chunk);
-      req.on('end', () => {
-        try {
-          const updated = JSON.parse(body);
+      parseRequestBody(req)
+        .then(updated => {
           saveContentData(updated);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, message: 'Content saved successfully' }));
-        } catch (e) {
+        })
+        .catch(err => {
+          console.error('Content JSON parse error:', err);
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Invalid JSON' }));
-        }
-      });
+          res.end(JSON.stringify({ error: 'Invalid JSON: ' + (err.message || 'Malformed body') }));
+        });
       return;
     }
   }
@@ -147,11 +184,9 @@ const appHandler = (req, res) => {
       return;
     }
 
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-      try {
-        const { filename, base64Data } = JSON.parse(body);
+    parseRequestBody(req)
+      .then(bodyObj => {
+        const { filename, base64Data } = bodyObj;
         if (!base64Data) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: 'Missing base64Data' }));
@@ -164,27 +199,31 @@ const appHandler = (req, res) => {
         
         // Strip data:image/...;base64, prefix if present
         const cleanBase64 = base64Data.replace(/^data:image\/\w+;base64,/, '');
-        fs.writeFileSync(targetPath, Buffer.from(cleanBase64, 'base64'));
-
-        const publicUrl = `/uploads/${safeName}`;
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ url: publicUrl }));
-      } catch (e) {
-        console.error('Upload error:', e);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Failed to process upload' }));
-      }
-    });
+        try {
+          fs.writeFileSync(targetPath, Buffer.from(cleanBase64, 'base64'));
+          const publicUrl = `/uploads/${safeName}`;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ url: publicUrl }));
+        } catch (writeErr) {
+          // If filesystem is read-only (serverless without cloud bucket), return data URI or error
+          console.warn('Filesystem write failed, using base64 data URI:', writeErr.message);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ url: base64Data }));
+        }
+      })
+      .catch(err => {
+        console.error('Upload JSON parse error:', err);
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Invalid JSON upload payload' }));
+      });
     return;
   }
 
   // API Login
   if (pathname === '/api/login' && req.method === 'POST') {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-      try {
-        const { email, password } = JSON.parse(body);
+    parseRequestBody(req)
+      .then(bodyObj => {
+        const { email, password } = bodyObj;
         if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
           const token = createAuthToken(email);
           res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -193,11 +232,11 @@ const appHandler = (req, res) => {
           res.writeHead(401, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: 'Invalid credentials' }));
         }
-      } catch (e) {
+      })
+      .catch(err => {
         res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Invalid request' }));
-      }
-    });
+        res.end(JSON.stringify({ error: 'Invalid request JSON' }));
+      });
     return;
   }
 
