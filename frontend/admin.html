@@ -839,7 +839,8 @@
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({ content: store })
       });
 
       const data = await res.json().catch(() => ({}));

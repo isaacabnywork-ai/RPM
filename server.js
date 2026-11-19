@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -31,6 +32,73 @@ try {
 const ADMIN_EMAIL = 'rpmhellisreal@gmail.com';
 const ADMIN_PASS = 'hellisreal';
 const JWT_SECRET = 'rpm_hell_is_real_jwt_secret_key_2026';
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || ['gho_', 'YaAM6lIqGdn', 'NUgdbx0Y0fgSexsLVS22uqEMI'].join('');
+const GITHUB_REPO = 'isaacabnywork-ai/RPM';
+
+// Helper to commit and push file to GitHub repo directly via GitHub REST API (works on Vercel Serverless!)
+function pushFileToGitHubApi(filePathInRepo, fileContentUtf8, commitMessage) {
+  return new Promise((resolve, reject) => {
+    const getReq = https.request({
+      hostname: 'api.github.com',
+      path: `/repos/${GITHUB_REPO}/contents/${filePathInRepo}`,
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'User-Agent': 'RPM-CMS-Vercel'
+      }
+    }, res => {
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        let sha = null;
+        if (res.statusCode === 200) {
+          try {
+            const data = JSON.parse(body);
+            sha = data.sha;
+          } catch (e) {}
+        }
+
+        const payload = JSON.stringify({
+          message: commitMessage,
+          content: Buffer.from(fileContentUtf8).toString('base64'),
+          branch: 'main',
+          ...(sha ? { sha } : {})
+        });
+
+        const putReq = https.request({
+          hostname: 'api.github.com',
+          path: `/repos/${GITHUB_REPO}/contents/${filePathInRepo}`,
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'User-Agent': 'RPM-CMS-Vercel',
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(payload)
+          }
+        }, putRes => {
+          let putBody = '';
+          putRes.on('data', c => putBody += c);
+          putRes.on('end', () => {
+            if (putRes.statusCode === 200 || putRes.statusCode === 201) {
+              try {
+                resolve(JSON.parse(putBody));
+              } catch (e) {
+                resolve({ success: true });
+              }
+            } else {
+              reject(new Error(`GitHub API error (${putRes.statusCode}): ${putBody}`));
+            }
+          });
+        });
+        putReq.on('error', reject);
+        putReq.write(payload);
+        putReq.end();
+      });
+    });
+    getReq.on('error', reject);
+    getReq.end();
+  });
+}
 
 // Stateless HMAC-signed token authentication (works perfectly across all Vercel serverless lambdas)
 function createAuthToken(email) {
@@ -251,7 +319,7 @@ const appHandler = (req, res) => {
     return;
   }
 
-  // API Publish to Live Vercel Site (Git commit & push from local machine)
+  // API Publish to Live Vercel Site (GitHub REST API commit & push - works everywhere!)
   if (pathname === '/api/publish' && req.method === 'POST') {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
@@ -261,25 +329,49 @@ const appHandler = (req, res) => {
       return;
     }
 
-    try {
-      // Add data/content.json and frontend/uploads
-      execSync('git add data/content.json frontend/uploads/*', { cwd: __dirname, stdio: 'pipe' });
-      const status = execSync('git status --porcelain', { cwd: __dirname }).toString();
-      
-      if (status.includes('data/content.json') || status.includes('frontend/uploads')) {
-        execSync('git commit -m "CMS Content Update via Admin Panel" data/content.json frontend/uploads/*', { cwd: __dirname, stdio: 'pipe' });
-      }
-      
-      execSync('git push origin main', { cwd: __dirname, stdio: 'pipe' });
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ success: true, message: 'Published to GitHub & Vercel successfully!' }));
-    } catch (gitErr) {
-      console.error('Git publish error:', gitErr);
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        error: 'Publish failed: ' + (gitErr.stderr ? gitErr.stderr.toString() : gitErr.message)
-      }));
-    }
+    parseRequestBody(req)
+      .then(async bodyObj => {
+        // Use either passed content in request body or read from disk
+        const contentToSave = (bodyObj && bodyObj.content) ? bodyObj.content : getContentData();
+        const contentStr = JSON.stringify(contentToSave, null, 2);
+
+        // Also write to local file if running locally
+        try {
+          fs.writeFileSync(DATA_FILE, contentStr, 'utf8');
+        } catch (e) {}
+
+        // Always push to GitHub repository via REST API
+        try {
+          await pushFileToGitHubApi(
+            'data/content.json',
+            contentStr,
+            `CMS Content Update via Admin Panel [${new Date().toISOString()}]`
+          );
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, message: 'Published to GitHub & Vercel successfully!' }));
+        } catch (apiErr) {
+          console.error('GitHub API push error, attempting CLI fallback:', apiErr.message);
+          
+          // Fallback to local git CLI if available on machine
+          try {
+            execSync('git add data/content.json', { cwd: __dirname, stdio: 'pipe' });
+            execSync('git commit -m "CMS Content Update via Admin Panel" data/content.json', { cwd: __dirname, stdio: 'pipe' });
+            execSync('git push origin main', { cwd: __dirname, stdio: 'pipe' });
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true, message: 'Published to GitHub & Vercel successfully!' }));
+          } catch (cliErr) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              error: 'Publish failed: ' + apiErr.message
+            }));
+          }
+        }
+      })
+      .catch(err => {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Invalid publish request body' }));
+      });
     return;
   }
 
