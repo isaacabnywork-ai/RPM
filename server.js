@@ -29,40 +29,31 @@ try {
 // Admin credentials
 const ADMIN_EMAIL = 'rpmhellisreal@gmail.com';
 const ADMIN_PASS = 'hellisreal';
+const JWT_SECRET = 'rpm_hell_is_real_jwt_secret_key_2026';
 
-// Session persistence across restarts and serverless requests
-function getValidSessions() {
-  try {
-    if (fs.existsSync(SESSIONS_FILE)) {
-      const data = JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8'));
-      const now = Date.now();
-      const valid = {};
-      for (const [token, expiry] of Object.entries(data)) {
-        if (expiry > now) valid[token] = expiry;
-      }
-      return valid;
-    }
-  } catch (e) {
-    console.error('Error reading sessions:', e);
-  }
-  return {};
-}
-
-function saveSession(token) {
-  const sessions = getValidSessions();
-  // 30 days session expiry
-  sessions[token] = Date.now() + (30 * 24 * 60 * 60 * 1000);
-  try {
-    fs.writeFileSync(SESSIONS_FILE, JSON.stringify(sessions, null, 2), 'utf8');
-  } catch (e) {
-    console.error('Error saving session:', e);
-  }
+// Stateless HMAC-signed token authentication (works perfectly across all Vercel serverless lambdas)
+function createAuthToken(email) {
+  const payload = Buffer.from(JSON.stringify({
+    email,
+    exp: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days validity
+  })).toString('base64url');
+  const signature = crypto.createHmac('sha256', JWT_SECRET).update(payload).digest('base64url');
+  return `${payload}.${signature}`;
 }
 
 function isSessionValid(token) {
-  if (!token) return false;
-  const sessions = getValidSessions();
-  return !!sessions[token];
+  if (!token || typeof token !== 'string' || !token.includes('.')) return false;
+  const parts = token.split('.');
+  if (parts.length !== 2) return false;
+  const [payload, signature] = parts;
+  const expectedSig = crypto.createHmac('sha256', JWT_SECRET).update(payload).digest('base64url');
+  if (signature !== expectedSig) return false;
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return data && data.exp > Date.now();
+  } catch (e) {
+    return false;
+  }
 }
 
 // Read content data
@@ -195,8 +186,7 @@ const appHandler = (req, res) => {
       try {
         const { email, password } = JSON.parse(body);
         if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-          const token = crypto.randomBytes(24).toString('hex');
-          saveSession(token);
+          const token = createAuthToken(email);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ token }));
         } else {
