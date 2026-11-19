@@ -535,13 +535,25 @@
           <input type="text" id="blogFormAuthor" class="form-control" placeholder="Ramendra Mahto">
         </div>
         <div class="form-group">
-          <label>Card Image URL (shown outside in blogs list)</label>
-          <input type="url" id="blogFormCardImage" class="form-control" placeholder="https://... or image link">
+          <label>Card Image (Outside Preview)</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="blogFormCardImage" class="form-control" placeholder="https://... or upload">
+            <label class="btn btn-outline" style="white-space:nowrap;cursor:pointer;padding:8px 12px;font-size:11px;">
+              Upload
+              <input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(event, 'blogFormCardImage')">
+            </label>
+          </div>
         </div>
       </div>
       <div class="form-group">
-        <label>Inside Hero Image URL (large image shown at top inside blog reader)</label>
-        <input type="url" id="blogFormHeroImage" class="form-control" placeholder="https://... or image link">
+        <label>Inside Hero Image (Reader Banner)</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="blogFormHeroImage" class="form-control" placeholder="https://... or upload">
+          <label class="btn btn-outline" style="white-space:nowrap;cursor:pointer;padding:8px 12px;font-size:11px;">
+            Upload
+            <input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(event, 'blogFormHeroImage')">
+          </label>
+        </div>
       </div>
       <div class="form-group">
         <label>Short Excerpt / Summary *</label>
@@ -775,13 +787,64 @@
       });
       if (res.ok) {
         showToast(msg);
-      } else {
+      } else if (res.status === 401) {
         alert('Authentication expired. Please log in again.');
         showAuth();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert('Failed to save changes: ' + (data.error || 'Server error (' + res.status + ')'));
       }
     } catch (e) {
-      alert('Failed to save changes.');
+      alert('Network or server error while saving changes. Please verify the server is running.');
     }
+  }
+
+  // Handle direct file uploads
+  async function handleImageUpload(event, targetInputId) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    // Check size (< 15MB)
+    if (file.size > 15 * 1024 * 1024) {
+      alert('Image file is too large. Please select an image under 15MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        showToast('Uploading image...');
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            filename: file.name,
+            base64Data: reader.result
+          })
+        });
+
+        if (res.status === 401) {
+          alert('Session expired. Please log in again.');
+          showAuth();
+          return;
+        }
+
+        const data = await res.json();
+        if (res.ok && data.url) {
+          document.getElementById(targetInputId).value = data.url;
+          showToast('Image uploaded successfully!');
+        } else {
+          alert('Upload failed: ' + (data.error || 'Unknown error'));
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Upload failed due to network or server error.');
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
   // Save Hero & About
