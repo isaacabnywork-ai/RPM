@@ -317,7 +317,13 @@
 <div class="dashboard" id="dashView">
   <header class="dash-nav">
     <div class="dash-logo">RP<em>M</em> Studio <em>Admin</em></div>
-    <div class="dash-menu">
+    <div class="dash-menu" style="display:flex;align-items:center;gap:10px;">
+      <button id="publishLiveBtn" class="btn btn-action" onclick="publishToLiveSite()" style="display:inline-flex;align-items:center;gap:6px;background:var(--ember);color:#fff;border-color:var(--ember);box-shadow:0 0 14px rgba(228,87,46,0.35);">
+        🚀 Publish to Live Vercel Site
+      </button>
+      <button class="btn btn-outline" onclick="exportContentJson()" title="Download a backup copy of your data file">
+        ⬇ Export Backup
+      </button>
       <a href="/" target="_blank" class="btn btn-outline" style="text-decoration:none;">View Website ↗</a>
       <button id="logoutBtn" class="btn btn-outline">Logout</button>
     </div>
@@ -796,6 +802,60 @@
       }
     } catch (e) {
       alert('Network or server error while saving changes. Please verify the server is running.');
+    }
+  }
+
+  // Export content.json backup
+  function exportContentJson() {
+    if (!store) {
+      alert('Content not loaded yet.');
+      return;
+    }
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(store, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute('download', 'content.json');
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    showToast('Backup downloaded!');
+  }
+
+  // Publish changes to GitHub & Vercel
+  async function publishToLiveSite() {
+    const btn = document.getElementById('publishLiveBtn');
+    const origHtml = btn.innerHTML;
+    if (!confirm('Are you ready to publish all your latest changes to the live Vercel site?')) {
+      return;
+    }
+
+    try {
+      btn.disabled = true;
+      btn.innerHTML = '⏳ Publishing...';
+      showToast('Pushing updates to live Vercel site...');
+
+      const res = await fetch('/api/publish', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        showToast('🚀 Published! Vercel is updating now (takes ~30s).');
+        alert('Success! Your latest changes have been committed and pushed to GitHub. Vercel will have your live website updated in ~30 seconds.');
+      } else {
+        alert('Publish failed: ' + (data.error || 'Server error. Make sure you are running the Admin Panel locally on your Mac at http://localhost:3000/admin to publish.'));
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Publish network error: ' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = origHtml;
     }
   }
 

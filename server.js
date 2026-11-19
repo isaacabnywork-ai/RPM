@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { execSync } = require('child_process');
 
 const PORT = 3000;
 const FRONTEND_DIR = path.join(__dirname, 'frontend');
@@ -247,6 +248,38 @@ const appHandler = (req, res) => {
     const isAuthed = isSessionValid(token);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ authenticated: isAuthed }));
+    return;
+  }
+
+  // API Publish to Live Vercel Site (Git commit & push from local machine)
+  if (pathname === '/api/publish' && req.method === 'POST') {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!isSessionValid(token)) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Unauthorized' }));
+      return;
+    }
+
+    try {
+      // Add data/content.json and frontend/uploads
+      execSync('git add data/content.json frontend/uploads/*', { cwd: __dirname, stdio: 'pipe' });
+      const status = execSync('git status --porcelain', { cwd: __dirname }).toString();
+      
+      if (status.includes('data/content.json') || status.includes('frontend/uploads')) {
+        execSync('git commit -m "CMS Content Update via Admin Panel" data/content.json frontend/uploads/*', { cwd: __dirname, stdio: 'pipe' });
+      }
+      
+      execSync('git push origin main', { cwd: __dirname, stdio: 'pipe' });
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, message: 'Published to GitHub & Vercel successfully!' }));
+    } catch (gitErr) {
+      console.error('Git publish error:', gitErr);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        error: 'Publish failed: ' + (gitErr.stderr ? gitErr.stderr.toString() : gitErr.message)
+      }));
+    }
     return;
   }
 
