@@ -9,12 +9,21 @@ const UPLOADS_DIR = path.join(FRONTEND_DIR, 'uploads');
 const DATA_FILE = path.join(__dirname, 'data', 'content.json');
 const SESSIONS_FILE = path.join(__dirname, 'data', 'sessions.json');
 
-// Ensure directories exist
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+// Ensure directories exist safely (handling read-only / serverless environments)
+try {
+  if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  }
+} catch (e) {
+  console.warn('Could not create uploads directory:', e.message);
 }
-if (!fs.existsSync(path.join(__dirname, 'data'))) {
-  fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
+
+try {
+  if (!fs.existsSync(path.join(__dirname, 'data'))) {
+    fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
+  }
+} catch (e) {
+  console.warn('Could not create data directory:', e.message);
 }
 
 // Admin credentials
@@ -88,8 +97,9 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon'
 };
 
-const server = http.createServer((req, res) => {
-  const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+const appHandler = (req, res) => {
+  const host = req.headers.host || 'localhost';
+  const parsedUrl = new URL(req.url, `http://${host}`);
   const pathname = parsedUrl.pathname;
 
   // Enable CORS
@@ -246,9 +256,16 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': contentType });
     res.end(content);
   });
-});
+};
 
-server.listen(PORT, () => {
-  console.log(`RPM Server running at http://localhost:${PORT}`);
-  console.log(`Admin Panel available at http://localhost:${PORT}/admin`);
-});
+// Export handler for Vercel Serverless Function
+module.exports = appHandler;
+
+// Only listen directly if executed via `node server.js`
+if (require.main === module) {
+  const server = http.createServer(appHandler);
+  server.listen(PORT, () => {
+    console.log(`RPM Server running at http://localhost:${PORT}`);
+    console.log(`Admin Panel available at http://localhost:${PORT}/admin`);
+  });
+}
