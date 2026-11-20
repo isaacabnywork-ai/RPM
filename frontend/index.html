@@ -674,10 +674,10 @@
   <nav>
     <a href="#hero" class="logo" id="siteLogo">RP<em>M</em></a>
     <ul class="navlinks" id="navlinks">
-      <li><a href="#about">About</a></li>
-      <li><a href="#blogs">Blogs</a></li>
-      <li><a href="#watch">Watch</a></li>
-      <li><a href="#connect">Connect</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/blogs">Blogs</a></li>
+      <li><a href="/videos">Videos</a></li>
+      <li><a href="/#connect">Connect</a></li>
     </ul>
     <a href="#connect" class="nav-cta" id="navCta">Let's Connect</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark theme" title="Toggle light / dark">☾</button>
@@ -738,9 +738,9 @@
         <p class="eyebrow">Words & Stories</p>
         <h2 class="section-title">From the <em>Blog</em></h2>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px;">
-        <p class="section-desc">Honest essays on creativity, music, and the artist's life — new one every week.</p>
-        <a href="https://hellisreal22.blogspot.com/" target="_blank" class="btn btn-line" id="visitBlogBtn" style="white-space:nowrap;">Visit My Blog ↗</a>
+      <div style="display:flex;flex-direction:row;align-items:center;gap:12px;flex-wrap:wrap;">
+        <a href="/blogs" class="btn btn-solid" style="white-space:nowrap;">View All Blogs →</a>
+        <a href="https://hellisreal22.blogspot.com/" target="_blank" class="btn btn-line" id="visitBlogBtn" style="white-space:nowrap;">Visit External Blog ↗</a>
       </div>
     </div>
 
@@ -788,11 +788,12 @@
       </div>
     </div>
 
-    <div class="section-head" style="margin-top:64px;margin-bottom:32px;">
+    <div class="section-head" style="margin-top:64px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
       <div>
         <p class="eyebrow">Featured</p>
         <h2 class="section-title" style="font-size:28px;">Latest <em>Videos</em></h2>
       </div>
+      <a href="/videos" class="btn btn-line" id="viewAllVideosBtn" style="white-space:nowrap;">View All Videos →</a>
     </div>
     <div class="video-grid" id="videoGrid">
       <div class="video-card">
@@ -895,9 +896,19 @@
     </div>
     <div class="blog-modal-footer">
       <span style="font-family:var(--font-mono);font-size:12px;color:var(--paper-dim);">Reading on RPM Website</span>
-      <a href="#" target="_blank" class="post-btn post-btn-outline" id="modalExternalLink">Open on External Blog ↗</a>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <button type="button" class="post-btn post-btn-primary" id="modalShareBtn" onclick="shareArticleLink()" style="cursor:pointer;">
+          🔗 Share Article
+        </button>
+        <a href="#" target="_blank" class="post-btn post-btn-outline" id="modalExternalLink">Open on External Blog ↗</a>
+      </div>
     </div>
   </div>
+</div>
+
+<!-- Copy notification toast -->
+<div id="shareToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card-bg);border:1px solid var(--ember);color:var(--paper);padding:12px 24px;border-radius:30px;font-family:var(--font-mono);font-size:13px;z-index:999999;box-shadow:0 8px 24px rgba(0,0,0,0.6);opacity:0;transition:all .3s ease;pointer-events:none;display:flex;align-items:center;gap:8px;">
+  <span>✓ Link copied to clipboard!</span>
 </div>
 
 <script>
@@ -1023,8 +1034,22 @@
       renderSiteSettings(siteData.siteSettings || {});
       renderBlogs(siteData.blogs || []);
       renderVideos(siteData.videos || []);
+
+      // Check URL query parameters for direct article link (?article=<id>)
+      checkUrlForDirectArticle();
     } catch (e) {
       console.warn('Could not load data from API, using default content:', e);
+    }
+  }
+
+  function checkUrlForDirectArticle() {
+    const params = new URLSearchParams(window.location.search);
+    const articleId = params.get('article');
+    if (articleId && loadedBlogsList.length > 0) {
+      const target = loadedBlogsList.find(b => String(b.id) === String(articleId));
+      if (target) {
+        openBlogModal(target, false);
+      }
     }
   }
 
@@ -1107,8 +1132,68 @@
   const modalAuthor = document.getElementById('modalAuthor');
   const modalBody = document.getElementById('modalBody');
   const modalExternalLink = document.getElementById('modalExternalLink');
+  let currentActiveBlog = null;
 
-  function openBlogModal(blog) {
+  function showShareToast(message = '✓ Link copied to clipboard!') {
+    const toast = document.getElementById('shareToast');
+    if (!toast) return;
+    toast.innerHTML = `<span>${message}</span>`;
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    toast.style.opacity = '1';
+    setTimeout(() => {
+      toast.style.transform = 'translateX(-50%) translateY(100px)';
+      toast.style.opacity = '0';
+    }, 2800);
+  }
+
+  function getArticleShareUrl(blog) {
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set('article', blog.id);
+    return url.toString();
+  }
+
+  async function shareArticleLink(blog = null) {
+    const targetBlog = blog || currentActiveBlog;
+    if (!targetBlog) return;
+
+    const shareUrl = getArticleShareUrl(targetBlog);
+    const title = targetBlog.title || 'RPM Article';
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: targetBlog.excerpt || title,
+          url: shareUrl
+        });
+        return;
+      } catch (err) {
+        // User cancelled share or fallback to clipboard
+      }
+    }
+
+    // Fallback: Copy to clipboard
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const tempInput = document.createElement('input');
+        tempInput.value = shareUrl;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+      }
+      showShareToast('✓ Article link copied to clipboard!');
+    } catch (e) {
+      prompt('Copy article link:', shareUrl);
+    }
+  }
+
+  function openBlogModal(blog, updateHistory = true) {
+    if (!blog) return;
+    currentActiveBlog = blog;
+
     if (blog.heroImage) {
       modalHeroImg.src = blog.heroImage;
       modalHeroImg.style.display = 'block';
@@ -1125,12 +1210,42 @@
     modalExternalLink.setAttribute('href', extUrl);
     blogModal.classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    // Update browser URL query parameter (?article=id) so the link can be copied and shared directly
+    if (updateHistory) {
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set('article', blog.id);
+      window.history.pushState({ articleId: blog.id }, '', newUrl);
+    }
   }
 
-  function closeBlogModal() {
+  function closeBlogModal(updateHistory = true) {
     blogModal.classList.remove('active');
     document.body.style.overflow = '';
+    currentActiveBlog = null;
+
+    if (updateHistory) {
+      const newUrl = new URL(window.location);
+      if (newUrl.searchParams.has('article')) {
+        newUrl.searchParams.delete('article');
+        window.history.pushState({}, '', newUrl);
+      }
+    }
   }
+
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', (e) => {
+    const params = new URLSearchParams(window.location.search);
+    const articleId = params.get('article');
+    if (articleId && loadedBlogsList.length > 0) {
+      const found = loadedBlogsList.find(b => String(b.id) === String(articleId));
+      if (found) {
+        openBlogModal(found, false);
+        return;
+      }
+    }
+    closeBlogModal(false);
+  });
 
   modalClose.addEventListener('click', closeBlogModal);
   blogModal.addEventListener('click', (e) => {
@@ -1147,8 +1262,11 @@
     if (!Array.isArray(articles) || articles.length === 0) return;
     loadedBlogsList = articles;
 
+    // On the homepage, show the latest 2 featured blogs to keep the layout clean & compact
+    const featuredArticles = articles.slice(0, 2);
+
     const listEl = document.getElementById('blogsList');
-    listEl.innerHTML = articles.map((b, index) => {
+    listEl.innerHTML = featuredArticles.map((b, index) => {
       const extLink = b.externalUrl || `https://hellisreal22.blogspot.com/`;
       const date = b.publishDate || 'Recent';
       const author = b.author || 'Ramendra Mahto';
@@ -1168,7 +1286,8 @@
             <p class="post-dek">${b.excerpt || ''}</p>
             <div class="post-actions">
               <button class="post-btn post-btn-primary" onclick="openBlogModal(loadedBlogsList[${index}])">Read Here</button>
-              <a class="post-btn post-btn-outline" href="${extLink}" target="_blank" rel="noopener">Visit Blog ↗</a>
+              <button class="post-btn post-btn-outline" onclick="shareArticleLink(loadedBlogsList[${index}])" title="Share Article Link">🔗 Share</button>
+              <a class="post-btn post-btn-outline" href="${extLink}" target="_blank" rel="noopener">Visit ↗</a>
             </div>
           </div>
         </article>
@@ -1179,8 +1298,11 @@
   function renderVideos(videos) {
     if (!Array.isArray(videos) || videos.length === 0) return;
 
+    // On the homepage, show the top 3 featured videos
+    const featuredVideos = videos.slice(0, 3);
+
     const gridEl = document.getElementById('videoGrid');
-    gridEl.innerHTML = videos.map(v => {
+    gridEl.innerHTML = featuredVideos.map(v => {
       let videoId = '';
       if (v.youtubeUrl) {
         const match = v.youtubeUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);

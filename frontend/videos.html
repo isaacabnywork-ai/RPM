@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Videos & YouTube — RPM | Hell is Real</title>
+<meta name="description" content="All video teachings, sermons, and playlist series by Ramendra Mahto from Hell is Real YouTube channel.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#12100E;
+    --card-bg:#1A1714;
+    --ember-deep:#2E1109;
+    --ember-deep2:#1a0d06;
+    --paper:#EAE2D3;
+    --paper-dim:#B7AE9D;
+    --ember:#E4572E;
+    --gold:#C99A3C;
+    --ash:#4A433C;
+    --header-bg:rgba(18,16,14,0.75);
+    --grain-opacity:0.05;
+    --font-display:'Fraunces', serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+    transition:background .35s ease, color .35s ease;
+  }
+
+  html[data-theme="light"]{
+    --void:#FAF6EE;
+    --card-bg:#FFFFFF;
+    --ember-deep:#F2E4CE;
+    --ember-deep2:#EAD8B8;
+    --paper:#1C1712;
+    --paper-dim:#6B6156;
+    --ember:#C1440E;
+    --gold:#9C7A2E;
+    --ash:#E2D7C4;
+    --header-bg:rgba(250,246,238,0.8);
+    --grain-opacity:0.03;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--void);
+    color:var(--paper);
+    font-family:var(--font-body);
+    line-height:1.5;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:var(--grain-opacity);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px;width:100%;}
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:50;
+    background:var(--header-bg);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 32px;
+    max-width:1120px;
+    margin:0 auto;
+  }
+  .logo{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:20px;
+    letter-spacing:0.02em;
+  }
+  .logo em{color:var(--ember);font-style:italic;}
+  .navlinks{display:flex;gap:32px;list-style:none;}
+  .navlinks a{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    transition:color .25s ease;
+  }
+  .navlinks a:hover, .navlinks a.active{color:var(--ember);}
+  .nav-cta{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:9px 16px;
+    border:1px solid var(--ember);
+    border-radius:2px;
+    color:var(--ember);
+    transition:all .25s ease;
+  }
+  .nav-cta:hover{background:var(--ember);color:var(--void);}
+  .menu-toggle{display:none;background:none;border:none;color:var(--paper);font-size:22px;cursor:pointer;}
+  .theme-toggle{
+    background:none;
+    border:1px solid var(--ash);
+    color:var(--paper);
+    width:38px;height:38px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:16px;
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .25s ease, color .25s ease, transform .3s ease;
+  }
+  .theme-toggle:hover{border-color:var(--ember);color:var(--ember);transform:rotate(20deg);}
+
+  @media (max-width:760px){
+    .navlinks{
+      position:fixed;top:64px;left:0;right:0;
+      flex-direction:column;
+      background:var(--void);
+      padding:24px 32px;
+      gap:20px;
+      border-bottom:1px solid var(--ash);
+      transform:translateY(-150%);
+      transition:transform .3s ease;
+    }
+    .navlinks.open{transform:translateY(0);}
+    .menu-toggle{display:block;}
+    .nav-cta{display:none;}
+  }
+
+  /* Page Header */
+  .page-hero{
+    padding:140px 0 40px;
+    border-bottom:1px solid var(--ash);
+  }
+  .page-title{
+    font-family:var(--font-display);
+    font-size:clamp(36px, 5vw, 56px);
+    font-weight:600;
+    line-height:1.15;
+    margin:12px 0;
+  }
+  .page-title em{color:var(--ember);font-style:italic;}
+  .page-desc{
+    color:var(--paper-dim);
+    font-size:16px;
+    max-width:680px;
+    line-height:1.6;
+  }
+
+  /* Main Featured Showcase */
+  .watch-panel{
+    display:grid;
+    grid-template-columns:1.2fr 0.8fr;
+    gap:0;
+    border:1px solid var(--ash);
+    border-radius:6px;
+    overflow:hidden;
+    margin:40px 0 60px;
+    background:var(--card-bg);
+  }
+  .watch-visual{
+    background:linear-gradient(160deg, var(--ember-deep), var(--ember-deep2));
+    position:relative;
+    min-height:360px;
+  }
+  .watch-visual iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+  }
+  .watch-info{padding:40px;display:flex;flex-direction:column;justify-content:center;gap:16px;}
+  .channel-name{font-family:var(--font-display);font-size:32px;font-weight:600;}
+  .channel-name em{color:var(--ember);font-style:italic;}
+  .watch-info p{color:var(--paper-dim);font-size:15px;line-height:1.6;}
+  .btn{
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:0.04em;
+    padding:12px 22px;
+    border-radius:3px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:all .2s ease;
+    width:fit-content;
+  }
+  .btn-solid{background:var(--ember);color:#fff;border:1px solid var(--ember);}
+  .btn-solid:hover{background:#d04922;}
+  @media (max-width:860px){.watch-panel{grid-template-columns:1fr;}}
+
+  /* Video Grid */
+  .main-content{flex:1;padding:20px 0 80px;}
+  .video-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px;
+  }
+  .video-card{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    background:var(--card-bg);
+    border:1px solid var(--ash);
+    border-radius:6px;
+    padding:14px;
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .video-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--ember);
+  }
+  .video-embed{
+    position:relative;
+    width:100%;
+    padding-top:56.25%;
+    background:var(--ember-deep);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .video-embed iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+  }
+  .video-title{
+    font-family:var(--font-body);
+    font-size:14.5px;
+    font-weight:500;
+    line-height:1.45;
+    color:var(--paper);
+    transition:color .2s ease;
+    margin-top:4px;
+  }
+  .video-title:hover{color:var(--ember);}
+
+  @media (max-width:960px){.video-grid{grid-template-columns:repeat(2, 1fr);}}
+  @media (max-width:600px){.video-grid{grid-template-columns:1fr;}}
+
+  footer{
+    border-top:1px solid var(--ash);
+    padding:32px 0;
+    margin-top:auto;
+  }
+  .footer-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--paper-dim);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="/" class="logo" id="siteLogo">RP<em>M</em></a>
+    <ul class="navlinks" id="navlinks">
+      <li><a href="/about">About</a></li>
+      <li><a href="/blogs">Blogs</a></li>
+      <li><a href="/videos" class="active">Videos</a></li>
+      <li><a href="/#connect">Connect</a></li>
+    </ul>
+    <a href="/#connect" class="nav-cta">Let's Connect</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☾</button>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </nav>
+</header>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" id="watchEyebrow">Featured Channel</p>
+    <h1 class="page-title">Videos & <em>Teachings</em></h1>
+    <p class="page-desc" id="watchDescription">Explore gospel sermons, biblical expositions, and Q&A teachings from the Hell is Real YouTube channel. Watch directly here or subscribe on YouTube.</p>
+
+    <!-- MAIN PLAYLIST / CHANNEL HIGHLIGHT -->
+    <div class="watch-panel">
+      <div class="watch-visual">
+        <iframe
+          id="watchIframe"
+          src="https://www.youtube.com/embed/videoseries?list=UUWuxZfX7FHTa32MxdEDHS1A"
+          title="Hell is Real — video playlist"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+      <div class="watch-info">
+        <p class="channel-name" id="watchChannelHeading">Hell is <em>Real</em></p>
+        <p id="watchChannelDescription">Sermons, teachings and gospel-centered videos — browse the playlist or visit the channel to subscribe.</p>
+        <a href="https://www.youtube.com/@HellisReal22" target="_blank" class="btn btn-solid" id="watchChannelBtn">Subscribe on YouTube ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN VIDEOS ARCHIVE -->
+<main class="main-content">
+  <div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+      <h2 style="font-family:var(--font-display);font-size:26px;">All Featured <em>Videos</em> (<span id="videoCount">0</span>)</h2>
+      <a href="https://www.youtube.com/@HellisReal22/videos" target="_blank" style="font-family:var(--font-mono);font-size:12px;color:var(--ember);">Open Full YouTube Channel ↗</a>
+    </div>
+
+    <div class="video-grid" id="videoGrid">
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--paper-dim);">Loading videos...</div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap footer-inner">
+    <div id="footerCopy">© 2026 Ramendra Mahto — Artist · Blogs · Creator</div>
+    <div style="display:flex;gap:20px;">
+      <a href="/" style="color:var(--ember);">← Back to Homepage</a>
+      <a href="/blogs">All Blogs ↗</a>
+      <a href="/#connect">Connect ↗</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Theme Toggle
+  const themeBtn = document.getElementById('themeToggle');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if(prefersLight){
+    document.documentElement.setAttribute('data-theme','light');
+    themeBtn.textContent = '☀';
+  }
+  themeBtn.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if(isLight){
+      document.documentElement.removeAttribute('data-theme');
+      themeBtn.textContent = '☾';
+    } else {
+      document.documentElement.setAttribute('data-theme','light');
+      themeBtn.textContent = '☀';
+    }
+  });
+
+  // Mobile menu
+  const toggle = document.getElementById('menuToggle');
+  const navlinks = document.getElementById('navlinks');
+  toggle.addEventListener('click', () => navlinks.classList.toggle('open'));
+
+  async function loadVideos() {
+    try {
+      const res = await fetch('/api/content');
+      const data = await res.json();
+      const s = data.siteSettings || {};
+      const videos = data.videos || [];
+
+      // Update Channel info if present
+      if (s.watchEyebrow) document.getElementById('watchEyebrow').textContent = s.watchEyebrow;
+      if (s.watchIframeSrc) document.getElementById('watchIframe').setAttribute('src', s.watchIframeSrc);
+      if (s.watchChannelHeading) document.getElementById('watchChannelHeading').innerHTML = s.watchChannelHeading;
+      if (s.watchChannelDescription) document.getElementById('watchChannelDescription').textContent = s.watchChannelDescription;
+      if (s.watchChannelBtnHref) document.getElementById('watchChannelBtn').setAttribute('href', s.watchChannelBtnHref);
+      if (s.footerCopyright) document.getElementById('footerCopy').textContent = s.footerCopyright;
+
+      document.getElementById('videoCount').textContent = videos.length;
+      renderVideoGrid(videos);
+    } catch (e) {
+      document.getElementById('videoGrid').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--paper-dim);">Unable to load videos.</div>`;
+    }
+  }
+
+  function renderVideoGrid(videos) {
+    const gridEl = document.getElementById('videoGrid');
+    if (!videos || !videos.length) {
+      gridEl.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--paper-dim);">No videos added yet.</div>`;
+      return;
+    }
+
+    gridEl.innerHTML = videos.map(v => {
+      let videoId = '';
+      if (v.youtubeUrl) {
+        const match = v.youtubeUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+        if (match && match[1]) videoId = match[1];
+      }
+
+      if (videoId) {
+        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}`;
+        const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        return `
+          <div class="video-card">
+            <div class="video-embed">
+              <iframe
+                src="${embedUrl}"
+                title="${v.title}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                loading="lazy">
+              </iframe>
+            </div>
+            <a href="${watchUrl}" target="_blank" rel="noopener" class="video-title">
+              ${v.title} ↗
+            </a>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="video-card">
+          <div class="video-embed" style="display:flex;align-items:center;justify-content:center;color:var(--paper-dim);">Video unavailable</div>
+          <p class="video-title">${v.title}</p>
+        </div>
+      `;
+    }).join('');
+  }
+
+  loadVideos();
+</script>
+
+</body>
+</html>

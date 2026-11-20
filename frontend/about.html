@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — RPM | Ramendra Mahto</title>
+<meta name="description" content="Learn about Ramendra Mahto — background, ministry with Hell is Real, mission, and beliefs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#12100E;
+    --card-bg:#1A1714;
+    --ember-deep:#2E1109;
+    --ember-deep2:#1a0d06;
+    --paper:#EAE2D3;
+    --paper-dim:#B7AE9D;
+    --ember:#E4572E;
+    --gold:#C99A3C;
+    --ash:#4A433C;
+    --header-bg:rgba(18,16,14,0.75);
+    --grain-opacity:0.05;
+    --font-display:'Fraunces', serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+    transition:background .35s ease, color .35s ease;
+  }
+
+  html[data-theme="light"]{
+    --void:#FAF6EE;
+    --card-bg:#FFFFFF;
+    --ember-deep:#F2E4CE;
+    --ember-deep2:#EAD8B8;
+    --paper:#1C1712;
+    --paper-dim:#6B6156;
+    --ember:#C1440E;
+    --gold:#9C7A2E;
+    --ash:#E2D7C4;
+    --header-bg:rgba(250,246,238,0.8);
+    --grain-opacity:0.03;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--void);
+    color:var(--paper);
+    font-family:var(--font-body);
+    line-height:1.6;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:var(--grain-opacity);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 32px;width:100%;}
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:50;
+    background:var(--header-bg);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 32px;
+    max-width:1120px;
+    margin:0 auto;
+  }
+  .logo{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:20px;
+    letter-spacing:0.02em;
+  }
+  .logo em{color:var(--ember);font-style:italic;}
+  .navlinks{display:flex;gap:32px;list-style:none;}
+  .navlinks a{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    transition:color .25s ease;
+  }
+  .navlinks a:hover, .navlinks a.active{color:var(--ember);}
+  .nav-cta{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:9px 16px;
+    border:1px solid var(--ember);
+    border-radius:2px;
+    color:var(--ember);
+    transition:all .25s ease;
+  }
+  .nav-cta:hover{background:var(--ember);color:var(--void);}
+  .menu-toggle{display:none;background:none;border:none;color:var(--paper);font-size:22px;cursor:pointer;}
+  .theme-toggle{
+    background:none;
+    border:1px solid var(--ash);
+    color:var(--paper);
+    width:38px;height:38px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:16px;
+    display:flex;align-items:center;justify-content:center;
+    transition:border-color .25s ease, color .25s ease, transform .3s ease;
+  }
+  .theme-toggle:hover{border-color:var(--ember);color:var(--ember);transform:rotate(20deg);}
+
+  @media (max-width:760px){
+    .navlinks{
+      position:fixed;top:64px;left:0;right:0;
+      flex-direction:column;
+      background:var(--void);
+      padding:24px 32px;
+      gap:20px;
+      border-bottom:1px solid var(--ash);
+      transform:translateY(-150%);
+      transition:transform .3s ease;
+    }
+    .navlinks.open{transform:translateY(0);}
+    .menu-toggle{display:block;}
+    .nav-cta{display:none;}
+  }
+
+  /* Page Layout */
+  .page-hero{
+    padding:140px 0 50px;
+    border-bottom:1px solid var(--ash);
+  }
+  .page-title{
+    font-family:var(--font-display);
+    font-size:clamp(36px, 5vw, 56px);
+    font-weight:600;
+    line-height:1.15;
+    margin:12px 0;
+  }
+  .page-title em{color:var(--ember);font-style:italic;}
+
+  .about-detail-grid{
+    display:grid;
+    grid-template-columns:1.2fr 0.8fr;
+    gap:60px;
+    padding:60px 0 100px;
+  }
+
+  .about-story{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    font-size:17px;
+    color:var(--paper);
+    line-height:1.8;
+  }
+
+  .about-story strong{color:var(--ember);}
+
+  .pull{
+    font-family:var(--font-display);
+    font-size:clamp(22px, 3vw, 32px);
+    font-style:italic;
+    color:var(--gold);
+    line-height:1.4;
+    border-left:3px solid var(--ember);
+    padding-left:24px;
+    margin:24px 0;
+  }
+
+  .tag-cloud{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:16px;
+  }
+  .tag-cloud span{
+    font-family:var(--font-mono);
+    font-size:12px;
+    padding:6px 14px;
+    border:1px solid var(--ash);
+    border-radius:2px;
+    color:var(--paper-dim);
+    background:var(--card-bg);
+  }
+
+  .about-sidebar-card{
+    background:var(--card-bg);
+    border:1px solid var(--ash);
+    border-radius:6px;
+    padding:36px;
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  }
+
+  .sidebar-stat{
+    border-bottom:1px solid var(--ash);
+    padding-bottom:16px;
+  }
+  .sidebar-stat:last-child{border-bottom:none;padding-bottom:0;}
+  .sidebar-stat-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    text-transform:uppercase;
+    color:var(--gold);
+    letter-spacing:0.08em;
+    margin-bottom:4px;
+  }
+  .sidebar-stat-val{
+    font-family:var(--font-display);
+    font-size:22px;
+    font-weight:600;
+  }
+
+  .btn{
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:0.04em;
+    padding:12px 20px;
+    border-radius:3px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    transition:all .2s ease;
+  }
+  .btn-solid{background:var(--ember);color:#fff;border:1px solid var(--ember);}
+  .btn-solid:hover{background:#d04922;}
+  .btn-line{background:transparent;color:var(--paper);border:1px solid var(--ash);}
+  .btn-line:hover{border-color:var(--paper-dim);}
+
+  @media (max-width:860px){
+    .about-detail-grid{grid-template-columns:1fr;gap:40px;}
+  }
+
+  footer{
+    border-top:1px solid var(--ash);
+    padding:32px 0;
+    margin-top:auto;
+  }
+  .footer-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--paper-dim);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="/" class="logo" id="siteLogo">RP<em>M</em></a>
+    <ul class="navlinks" id="navlinks">
+      <li><a href="/about" class="active">About</a></li>
+      <li><a href="/blogs">Blogs</a></li>
+      <li><a href="/videos">Videos</a></li>
+      <li><a href="/#connect">Connect</a></li>
+    </ul>
+    <a href="/#connect" class="nav-cta">Let's Connect</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☾</button>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+  </nav>
+</header>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow" id="aboutEyebrow">The Story & Mission</p>
+    <h1 class="page-title" id="aboutTitle">Who is <em>RPM?</em></h1>
+    <p style="color:var(--paper-dim);font-size:16px;max-width:680px;">Get to know Ramendra Prasad Mahto, the vision behind Hell is Real, and the passion for proclaiming God's Word in truth and love.</p>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main class="wrap">
+  <div class="about-detail-grid">
+    <div class="about-story">
+      <p id="aboutParagraph1">Hello, I'm Ramendra Prasad Mahto. I have a passion for teaching the Bible and sharing the truth of God's Word in Hindi.</p>
+      
+      <p class="pull" id="aboutQuote">"Art is not what I do — it is what I am."</p>
+
+      <p id="aboutParagraph2">Through <strong>Hell is Real</strong>, I create biblical blogs, theology resources, and YouTube content to help believers grow in their faith and encourage others to know Christ through the Scriptures.</p>
+
+      <div style="margin-top:16px;">
+        <h3 style="font-family:var(--font-display);font-size:22px;margin-bottom:12px;">Focus Areas & Ministry</h3>
+        <div class="tag-cloud" id="aboutTags">
+          <span>Bible Teacher</span><span>YouTuber</span><span>Writer</span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:14px;margin-top:24px;flex-wrap:wrap;">
+        <a href="/blogs" class="btn btn-solid">Read the Blogs →</a>
+        <a href="/videos" class="btn btn-line">Watch Videos →</a>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div>
+      <div class="about-sidebar-card">
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-label">Full Name</div>
+          <div class="sidebar-stat-val">Ramendra Prasad Mahto</div>
+        </div>
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-label">Ministry & Channel</div>
+          <div class="sidebar-stat-val" style="color:var(--ember);">Hell is Real</div>
+        </div>
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-label">Main Language</div>
+          <div class="sidebar-stat-val">Hindi / English</div>
+        </div>
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-label">Connect</div>
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;font-size:13px;font-family:var(--font-mono);">
+            <a href="https://www.youtube.com/@HellisReal22" target="_blank" style="color:var(--ember);">YouTube: @HellisReal22 ↗</a>
+            <a href="mailto:rpmhellisreal@gmail.com" style="color:var(--paper-dim);">Email: rpmhellisreal@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap footer-inner">
+    <div id="footerCopy">© 2026 Ramendra Mahto — Artist · Blogs · Creator</div>
+    <div style="display:flex;gap:20px;">
+      <a href="/" style="color:var(--ember);">← Back to Homepage</a>
+      <a href="/blogs">Blogs ↗</a>
+      <a href="/#connect">Connect ↗</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Theme Toggle
+  const themeBtn = document.getElementById('themeToggle');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if(prefersLight){
+    document.documentElement.setAttribute('data-theme','light');
+    themeBtn.textContent = '☀';
+  }
+  themeBtn.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if(isLight){
+      document.documentElement.removeAttribute('data-theme');
+      themeBtn.textContent = '☾';
+    } else {
+      document.documentElement.setAttribute('data-theme','light');
+      themeBtn.textContent = '☀';
+    }
+  });
+
+  // Mobile menu
+  const toggle = document.getElementById('menuToggle');
+  const navlinks = document.getElementById('navlinks');
+  toggle.addEventListener('click', () => navlinks.classList.toggle('open'));
+
+  async function loadAbout() {
+    try {
+      const res = await fetch('/api/content');
+      const data = await res.json();
+      const s = data.siteSettings || {};
+
+      if (s.aboutEyebrow) document.getElementById('aboutEyebrow').textContent = s.aboutEyebrow;
+      if (s.aboutTitle) document.getElementById('aboutTitle').innerHTML = s.aboutTitle;
+      if (s.aboutParagraph1) document.getElementById('aboutParagraph1').innerHTML = s.aboutParagraph1;
+      if (s.aboutParagraph2) document.getElementById('aboutParagraph2').innerHTML = s.aboutParagraph2;
+      if (s.aboutQuote) document.getElementById('aboutQuote').textContent = s.aboutQuote;
+      if (Array.isArray(s.aboutTags) && s.aboutTags.length) {
+        document.getElementById('aboutTags').innerHTML = s.aboutTags.map(t => `<span>${t}</span>`).join('');
+      }
+      if (s.footerCopyright) document.getElementById('footerCopy').textContent = s.footerCopyright;
+    } catch (e) {}
+  }
+
+  loadAbout();
+</script>
+
+</body>
+</html>
